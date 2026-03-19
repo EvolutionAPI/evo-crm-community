@@ -41,7 +41,7 @@ jobs:
           output: trivy-${{ matrix.service }}.sarif
 
       - name: Upload Trivy scan results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: trivy-${{ matrix.service }}.sarif
