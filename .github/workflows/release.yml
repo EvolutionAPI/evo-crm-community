@@ -1,0 +1,95 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ghcr.io/evolutionapi
+
+jobs:
+  build-and-push:
+    name: Build & Push ${{ matrix.service }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    strategy:
+      matrix:
+        include:
+          - service: evo-auth-service-community
+            context: ./evo-auth-service-community
+            dockerfile: ./evo-auth-service-community/Dockerfile
+          - service: evo-ai-crm-community
+            context: ./evo-ai-crm-community
+            dockerfile: ./evo-ai-crm-community/docker/Dockerfile
+          - service: evo-ai-frontend-community
+            context: ./evo-ai-frontend-community
+            dockerfile: ./evo-ai-frontend-community/Dockerfile
+          - service: evo-ai-processor-community
+            context: ./evo-ai-processor-community
+            dockerfile: ./evo-ai-processor-community/Dockerfile
+          - service: evo-ai-core-service-community
+            context: ./evo-ai-core-service-community
+            dockerfile: ./evo-ai-core-service-community/Dockerfile
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract version from tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: |
+            ${{ env.IMAGE_PREFIX }}/${{ matrix.service }}:${{ steps.version.outputs.version }}
+            ${{ env.IMAGE_PREFIX }}/${{ matrix.service }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  create-release:
+    name: Create GitHub Release
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          body: |
+            ## Docker Images
+
+            All images are available on GitHub Container Registry:
+
+            ```bash
+            docker pull ghcr.io/evolutionapi/evo-auth-service-community:${{ github.ref_name }}
+            docker pull ghcr.io/evolutionapi/evo-ai-crm-community:${{ github.ref_name }}
+            docker pull ghcr.io/evolutionapi/evo-ai-frontend-community:${{ github.ref_name }}
+            docker pull ghcr.io/evolutionapi/evo-ai-processor-community:${{ github.ref_name }}
+            docker pull ghcr.io/evolutionapi/evo-ai-core-service-community:${{ github.ref_name }}
+            ```

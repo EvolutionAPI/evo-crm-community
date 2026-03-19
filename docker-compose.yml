@@ -1,0 +1,260 @@
+services:
+  # ---------------------------------------------------------------------------
+  # Infrastructure
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DATABASE:-evo_community}
+      POSTGRES_USER: ${POSTGRES_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-REPLACE_ME_POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USERNAME:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    command: ["sh", "-c", "redis-server --requirepass ${REDIS_PASSWORD:-REPLACE_ME_REDIS_PASSWORD} --appendonly yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-REPLACE_ME_REDIS_PASSWORD}", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mailhog:
+    image: mailhog/mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  # ---------------------------------------------------------------------------
+  # Auth Service (Ruby / Rails) — Port 3001
+  # ---------------------------------------------------------------------------
+  evo-auth:
+    build:
+      context: ./evo-auth-service-community
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    env_file: .env
+    environment:
+      RAILS_ENV: ${RAILS_ENV:-development}
+      REDIS_URL: redis://:${REDIS_PASSWORD:-REPLACE_ME_REDIS_PASSWORD}@redis:6379/1
+      POSTGRES_HOST: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: bash -c "bundle install && bundle exec rails db:prepare && bundle exec rails s -p 3001 -b 0.0.0.0"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+  evo-auth-sidekiq:
+    build:
+      context: ./evo-auth-service-community
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      RAILS_ENV: ${RAILS_ENV:-development}
+      REDIS_URL: redis://:${REDIS_PASSWORD:-REPLACE_ME_REDIS_PASSWORD}@redis:6379/1
+      POSTGRES_HOST: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: bash -c "bundle install && bundle exec sidekiq"
+
+  # ---------------------------------------------------------------------------
+  # CRM Service (Ruby / Rails) — Port 3000
+  # ---------------------------------------------------------------------------
+  evo-crm:
+    build:
+      context: ./evo-ai-crm-community
+      dockerfile: docker/Dockerfile
+      args:
+        BUNDLE_WITHOUT: ""
+        RAILS_ENV: development
+        RAILS_SERVE_STATIC_FILES: "false"
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file: .env
+    environment:
+      RAILS_ENV: ${RAILS_ENV:-development}
+      REDIS_URL: redis://:${REDIS_PASSWORD:-REPLACE_ME_REDIS_PASSWORD}@redis:6379/0
+      POSTGRES_HOST: postgres
+      EVO_AUTH_SERVICE_URL: http://evo-auth:3001
+      EVO_AI_CORE_SERVICE_URL: http://evo-core:5555
+    volumes:
+      - ./evo-ai-crm-community:/app:delegated
+      - crm_bundle:/usr/local/bundle
+      - crm_node_modules:/app/node_modules
+      - crm_cache:/app/tmp/cache
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      evo-auth:
+        condition: service_healthy
+    entrypoint: docker/entrypoints/rails.sh
+    command: ["bundle", "exec", "rails", "s", "-p", "3000", "-b", "0.0.0.0"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/auth/sign_in"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+
+  evo-crm-sidekiq:
+    build:
+      context: ./evo-ai-crm-community
+      dockerfile: docker/Dockerfile
+      args:
+        BUNDLE_WITHOUT: ""
+        RAILS_ENV: development
+        RAILS_SERVE_STATIC_FILES: "false"
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      RAILS_ENV: ${RAILS_ENV:-development}
+      REDIS_URL: redis://:${REDIS_PASSWORD:-REPLACE_ME_REDIS_PASSWORD}@redis:6379/0
+      POSTGRES_HOST: postgres
+      EVO_AUTH_SERVICE_URL: http://evo-auth:3001
+      EVO_AI_CORE_SERVICE_URL: http://evo-core:5555
+    volumes:
+      - ./evo-ai-crm-community:/app:delegated
+      - crm_bundle:/usr/local/bundle
+      - crm_node_modules:/app/node_modules
+      - crm_cache:/app/tmp/cache
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    entrypoint: docker/entrypoints/rails.sh
+    command: ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
+
+  # ---------------------------------------------------------------------------
+  # Core Service (Go / Gin) — Port 5555
+  # ---------------------------------------------------------------------------
+  evo-core:
+    build:
+      context: ./evo-ai-core-service-community
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "5555:5555"
+    env_file: .env
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_USER: ${POSTGRES_USERNAME:-postgres}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-REPLACE_ME_POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DATABASE:-evo_community}
+      DB_SSLMODE: disable
+      PORT: "5555"
+      EVOLUTION_BASE_URL: http://evo-crm:3000
+      EVO_AUTH_BASE_URL: http://evo-auth:3001
+      AI_PROCESSOR_URL: http://evo-processor:8000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5555/api/v1/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ---------------------------------------------------------------------------
+  # Processor Service (Python / FastAPI) — Port 8000
+  # ---------------------------------------------------------------------------
+  evo-processor:
+    build:
+      context: ./evo-ai-processor-community
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file: .env
+    environment:
+      POSTGRES_CONNECTION_STRING: postgresql://${POSTGRES_USERNAME:-postgres}:${POSTGRES_PASSWORD:-REPLACE_ME_POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DATABASE:-evo_community}
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-REPLACE_ME_REDIS_PASSWORD}
+      REDIS_SSL: "false"
+      HOST: 0.0.0.0
+      PORT: "8000"
+      EVO_AI_CRM_URL: http://evo-crm:3000
+      CORE_SERVICE_URL: http://evo-core:5555/api/v1
+    volumes:
+      - processor_logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # ---------------------------------------------------------------------------
+  # Frontend (React / Vite / Nginx) — Port 5173
+  # ---------------------------------------------------------------------------
+  evo-frontend:
+    build:
+      context: ./evo-ai-frontend-community
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:3000}
+        VITE_AUTH_API_URL: ${VITE_AUTH_API_URL:-http://localhost:3001}
+        VITE_EVOAI_API_URL: ${VITE_EVOAI_API_URL:-http://localhost:5555}
+        VITE_AGENT_PROCESSOR_URL: ${VITE_AGENT_PROCESSOR_URL:-http://localhost:8000}
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      evo-auth:
+        condition: service_healthy
+      evo-crm:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  postgres_data:
+  redis_data:
+  crm_bundle:
+  crm_node_modules:
+  crm_cache:
+  processor_logs:

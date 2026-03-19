@@ -1,0 +1,32 @@
+name: Question
+description: Ask a question about Evo AI Community
+title: "[Question]: "
+labels: ["question"]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: What would you like to know?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What are you trying to accomplish?
+
+  - type: dropdown
+    id: service
+    attributes:
+      label: Related Service
+      description: Is this about a specific service?
+      options:
+        - General
+        - Auth Service
+        - CRM Service
+        - Frontend
+        - Processor
+        - Core Service
+        - Docker / Setup

@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate-compose:
+    name: Validate Docker Compose
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Validate docker-compose.yml
+        run: docker compose config --quiet
+
+  lint-dockerfiles:
+    name: Lint Dockerfiles
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Lint Auth Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: evo-auth-service-community/Dockerfile
+          failure-threshold: error
+
+      - name: Lint CRM Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: evo-ai-crm-community/docker/Dockerfile
+          failure-threshold: error
+
+      - name: Lint Frontend Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: evo-ai-frontend-community/Dockerfile
+          failure-threshold: error
+
+      - name: Lint Processor Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: evo-ai-processor-community/Dockerfile
+          failure-threshold: error
+
+      - name: Lint Core Service Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: evo-ai-core-service-community/Dockerfile
+          failure-threshold: error

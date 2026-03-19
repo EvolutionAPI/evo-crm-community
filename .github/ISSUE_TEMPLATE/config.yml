@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Troubleshooting Guide
+    url: https://github.com/EvolutionAPI/evo-crm-community/blob/main/docs/TROUBLESHOOTING.md
+    about: Check common issues and solutions before opening a new issue.
+  - name: Documentation
+    url: https://github.com/EvolutionAPI/evo-crm-community/blob/main/docs/SETUP-GUIDE.md
+    about: Read the full setup and configuration guide.

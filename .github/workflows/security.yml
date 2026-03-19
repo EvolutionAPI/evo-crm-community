@@ -1,0 +1,48 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 6 * * 1" # Every Monday at 6 AM UTC
+
+jobs:
+  trivy-scan:
+    name: Trivy Scan — ${{ matrix.service }}
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    strategy:
+      matrix:
+        include:
+          - service: evo-auth-service-community
+            path: evo-auth-service-community
+          - service: evo-ai-crm-community
+            path: evo-ai-crm-community
+          - service: evo-ai-frontend-community
+            path: evo-ai-frontend-community
+          - service: evo-ai-processor-community
+            path: evo-ai-processor-community
+          - service: evo-ai-core-service-community
+            path: evo-ai-core-service-community
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: fs
+          scan-ref: ${{ matrix.path }}
+          severity: HIGH,CRITICAL
+          format: sarif
+          output: trivy-${{ matrix.service }}.sarif
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: trivy-${{ matrix.service }}.sarif
+          category: trivy-${{ matrix.service }}
