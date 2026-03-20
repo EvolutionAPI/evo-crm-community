@@ -232,10 +232,13 @@ services:
       context: ./evo-ai-frontend-community
       dockerfile: Dockerfile
       args:
+        VITE_APP_ENV: ${VITE_APP_ENV:-development}
         VITE_API_URL: ${VITE_API_URL:-http://localhost:3000}
         VITE_AUTH_API_URL: ${VITE_AUTH_API_URL:-http://localhost:3001}
         VITE_EVOAI_API_URL: ${VITE_EVOAI_API_URL:-http://localhost:5555}
         VITE_AGENT_PROCESSOR_URL: ${VITE_AGENT_PROCESSOR_URL:-http://localhost:8000}
+        VITE_WS_URL: ${VITE_WS_URL:-ws://localhost:3000/cable}
+        VITE_TINYMCE_API_KEY: ${VITE_TINYMCE_API_KEY:-no-api-key}
     restart: unless-stopped
     ports:
       - "5173:80"

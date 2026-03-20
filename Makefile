@@ -20,6 +20,13 @@ RESET := \033[0m
 
 help: ## Show this help message
 	@echo ""
+	@echo "  $(CYAN)  ______            _    ___   $(RESET)"
+	@echo "  $(CYAN) |  ____|          | |  |__ \  $(RESET)"
+	@echo "  $(CYAN) | |__  __   _____ | |     ) | $(RESET)"
+	@echo "  $(CYAN) |  __| \ \ / / _ \| |    / /  $(RESET)"
+	@echo "  $(CYAN) | |____ \ V / (_) |_|   / /_  $(RESET)"
+	@echo "  $(CYAN) |______| \_/ \___/(_)  |____| $(RESET)"
+	@echo ""
 	@echo "  $(CYAN)Evo AI Community$(RESET) — Development Commands"
 	@echo ""
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -44,6 +51,13 @@ setup: ## First-time setup: copy env, build, start, seed
 		sleep 2; \
 	done
 	@echo "$(GREEN)Database is ready!$(RESET)"
+	@echo "Waiting for Redis to be ready..."
+	@REDIS_PASS=$$(grep -E '^REDIS_PASSWORD=' .env 2>/dev/null | cut -d= -f2- || echo "evoai_redis_pass"); \
+	REDIS_PASS=$${REDIS_PASS:-evoai_redis_pass}; \
+	until docker compose exec -T redis redis-cli --no-auth-warning -a "$$REDIS_PASS" ping > /dev/null 2>&1; do \
+		sleep 2; \
+	done
+	@echo "$(GREEN)Redis is ready!$(RESET)"
 	@$(MAKE) seed-auth
 	@$(MAKE) seed-crm
 	docker compose up -d
@@ -99,12 +113,12 @@ seed: seed-auth seed-crm ## Run all seeds (auth first, then CRM)
 
 seed-auth: ## Seed the Auth service (creates default user)
 	@echo "$(CYAN)Seeding Auth service...$(RESET)"
-	docker compose run --rm evo-auth bash -c "bundle exec rails db:prepare && bundle exec rails db:seed"
+	docker compose run --rm evo-auth bash -c "bundle exec rails db:create db:migrate db:seed"
 	@echo "$(GREEN)Auth service seeded.$(RESET)"
 
 seed-crm: ## Seed the CRM service (creates default inbox)
 	@echo "$(CYAN)Seeding CRM service...$(RESET)"
-	docker compose run --rm evo-crm bash -c "bundle exec rails db:prepare && bundle exec rails db:seed"
+	docker compose run --rm evo-crm bash -c "bundle exec rails db:create db:migrate db:seed"
 	@echo "$(GREEN)CRM service seeded.$(RESET)"
 
 ## —— Shell Access —————————————————————————————————————————————————————————————

@@ -12,6 +12,12 @@
 
 set -e
 
+# Ensure we're running under bash (required for string slicing in spinner)
+if [ -z "$BASH_VERSION" ]; then
+  echo "This script requires bash. Please run: bash setup.sh"
+  exit 1
+fi
+
 # ---------------------------------------------------------------------------
 # Colors (with fallback for no-color terminals)
 # ---------------------------------------------------------------------------
@@ -34,15 +40,23 @@ success() { echo "${GREEN}[OK]${RESET}    $1"; }
 warn()    { echo "${YELLOW}[WARN]${RESET}  $1"; }
 fail()    { echo "${RED}[ERROR]${RESET} $1"; exit 1; }
 
-spinner() {
-  local pid=$1
-  local msg=$2
+wait_for_service() {
+  local msg=$1
+  shift
+  local max=${1:?max retries required}; shift
   local spin='|/-\'
   local i=0
-  while kill -0 "$pid" 2>/dev/null; do
+  local retries=0
+  printf "${CYAN}[....]${RESET} %s %s" "$msg" "${spin:0:1}"
+  until "$@" > /dev/null 2>&1; do
+    retries=$((retries + 1))
+    if [ "$retries" -ge "$max" ]; then
+      printf "\n"
+      fail "$msg — timed out. Check: docker compose logs"
+    fi
     i=$(( (i+1) % 4 ))
     printf "\r${CYAN}[....]${RESET} %s %s" "$msg" "${spin:$i:1}"
-    sleep 0.3
+    sleep 2
   done
   printf "\r${GREEN}[OK]${RESET}    %s   \n" "$msg"
 }
@@ -99,16 +113,8 @@ echo ""
 # ---------------------------------------------------------------------------
 info "Checking Git submodules..."
 
-SUBMODULE_DIRS=(
-  "evo-auth-service-community"
-  "evo-ai-crm-community"
-  "evo-ai-frontend-community"
-  "evo-ai-processor-community"
-  "evo-ai-core-service-community"
-)
-
 needs_init=false
-for dir in "${SUBMODULE_DIRS[@]}"; do
+for dir in evo-auth-service-community evo-ai-crm-community evo-ai-frontend-community evo-ai-processor-community evo-ai-core-service-community; do
   if [ ! -f "$dir/Dockerfile" ] && [ ! -f "$dir/docker/Dockerfile" ] && [ ! -f "$dir/package.json" ]; then
     needs_init=true
     break
@@ -167,28 +173,15 @@ echo ""
 info "Starting database and cache..."
 docker compose up -d postgres redis mailhog
 
-info "Waiting for PostgreSQL to be ready..."
-retries=0
-max_retries=30
-until docker compose exec -T postgres pg_isready -U postgres > /dev/null 2>&1; do
-  retries=$((retries + 1))
-  if [ "$retries" -ge "$max_retries" ]; then
-    fail "PostgreSQL did not become ready in time. Check: docker compose logs postgres"
-  fi
-  sleep 2
-done
-success "PostgreSQL is ready"
+# Read Redis password from .env (fallback to default)
+REDIS_PASS=$(grep -E '^REDIS_PASSWORD=' .env 2>/dev/null | cut -d= -f2- || echo "evoai_redis_pass")
+REDIS_PASS=${REDIS_PASS:-evoai_redis_pass}
 
-info "Waiting for Redis to be ready..."
-retries=0
-until docker compose exec -T redis redis-cli -a evoai_redis_pass ping > /dev/null 2>&1; do
-  retries=$((retries + 1))
-  if [ "$retries" -ge "$max_retries" ]; then
-    fail "Redis did not become ready in time. Check: docker compose logs redis"
-  fi
-  sleep 2
-done
-success "Redis is ready"
+wait_for_service "Waiting for PostgreSQL to be ready..." 30 \
+  docker compose exec -T postgres pg_isready -U postgres
+
+wait_for_service "Waiting for Redis to be ready..." 30 \
+  docker compose exec -T redis redis-cli --no-auth-warning -a "$REDIS_PASS" ping
 
 echo ""
 
@@ -196,7 +189,7 @@ echo ""
 # Step 6: Seed Auth service (must be first)
 # ---------------------------------------------------------------------------
 info "Seeding Auth service (creating default account and user)..."
-docker compose run --rm evo-auth bash -c "bundle exec rails db:prepare && bundle exec rails db:seed"
+docker compose run --rm evo-auth bash -c "bundle exec rails db:create db:migrate db:seed"
 success "Auth service seeded"
 
 echo ""
@@ -205,7 +198,7 @@ echo ""
 # Step 7: Seed CRM service
 # ---------------------------------------------------------------------------
 info "Seeding CRM service (creating default inbox)..."
-docker compose run --rm evo-crm bash -c "bundle exec rails db:prepare && bundle exec rails db:seed"
+docker compose run --rm evo-crm bash -c "bundle exec rails db:create db:migrate db:seed"
 success "CRM service seeded"
 
 echo ""
@@ -248,10 +241,4 @@ echo "  make logs     — View logs (all services)"
 echo "  make stop     — Stop all services"
 echo "  make start    — Start all services"
 echo "  make clean    — Remove all data and start fresh"
-echo ""
-echo "  ${BOLD}Documentation:${RESET}"
-echo "  ─────────────────────────────────────────────"
-echo "  Setup Guide:       docs/SETUP-GUIDE.md"
-echo "  Troubleshooting:   docs/TROUBLESHOOTING.md"
-echo "  Contributing:      CONTRIBUTING.md"
 echo ""
