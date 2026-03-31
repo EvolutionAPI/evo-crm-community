@@ -13,3 +13,9 @@
 [submodule "evo-ai-core-service-community"]
 	path = evo-ai-core-service-community
 	url = git@github.com:EvolutionAPI/evo-ai-core-service-community.git
+[submodule "evolution-api"]
+	path = evolution-api
+	url = git@github.com:EvolutionAPI/evolution-api.git
+[submodule "evolution-go"]
+	path = evolution-go
+	url = git@github.com:EvolutionAPI/evolution-go-develop.git
