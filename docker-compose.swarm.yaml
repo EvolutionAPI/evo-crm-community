@@ -152,6 +152,7 @@ services:
       SIDEKIQ_CONCURRENCY: 10
     networks:
       - evo_internal
+    stop_grace_period: 300s
     deploy:
       replicas: 1
       placement:
