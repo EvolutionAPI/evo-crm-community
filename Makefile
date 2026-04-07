@@ -14,7 +14,7 @@ RESET := \033[0m
 
 .PHONY: help setup start stop restart logs clean build status \
         seed seed-auth seed-crm \
-        shell-auth shell-crm shell-core shell-processor
+        shell-auth shell-crm shell-core shell-processor shell-bot-runtime
 
 ## —— General ——————————————————————————————————————————————————————————————————
 
@@ -52,12 +52,13 @@ setup: ## First-time setup: copy env, build, start, seed
 	@echo "$(GREEN)  Evo AI Community is running!$(RESET)"
 	@echo "$(GREEN)============================================$(RESET)"
 	@echo ""
-	@echo "  Frontend:   http://localhost:5173"
-	@echo "  CRM API:    http://localhost:3000"
-	@echo "  Auth API:   http://localhost:3001"
-	@echo "  Processor:  http://localhost:8000"
-	@echo "  Core API:   http://localhost:5555"
-	@echo "  Mailhog:    http://localhost:8025"
+	@echo "  Frontend:      http://localhost:5173"
+	@echo "  CRM API:      http://localhost:3000"
+	@echo "  Auth API:     http://localhost:3001"
+	@echo "  Processor:    http://localhost:8000"
+	@echo "  Core API:     http://localhost:5555"
+	@echo "  Bot Runtime:  http://localhost:8080"
+	@echo "  Mailhog:      http://localhost:8025"
 	@echo ""
 	@echo "  Login:  support@evo-auth-service-community.com"
 	@echo "  Pass:   Password@123"
@@ -120,3 +121,6 @@ shell-core: ## Open a shell in the Core service container
 
 shell-processor: ## Open a shell in the Processor service container
 	docker compose exec evo-processor bash
+
+shell-bot-runtime: ## Open a shell in the Bot Runtime service container
+	docker compose exec evo-bot-runtime sh

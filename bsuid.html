@@ -1,0 +1,721 @@
+<div class="material-gate-wrapper">
+
+
+
+
+<div id="material-page-gate" class="material-gate" data-material-id="whatsapp-usernames-bsuid" style="display: none;">
+  <div class="material-gate__box">
+    <div class="material-gate__icon" aria-hidden="true">
+      
+
+
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="10" x="5" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+
+    </div>
+    
+    <p class="material-gate__eyebrow">Urgente</p>
+    <h2 class="material-gate__title">BSUIDs e Usernames do WhatsApp: guia completo para integrações</h2>
+    <p class="material-gate__teaser">BSUIDs já estão em produção. Quando o usuário esconder o número, seu produto aguenta? Guia completo para adaptar antes que quebre.</p>
+    
+    <div class="material-gate__form">
+      <input type="password" class="material-gate__input" id="material-gate-input" placeholder="Senha" autocomplete="off" aria-label="Senha deste guia ou da comunidade">
+      <button type="button" class="material-gate__submit" id="material-gate-submit">Abrir o guia</button>
+    </div>
+    <p class="material-gate__error" id="material-gate-error" hidden="">Senha incorreta.</p>
+    <p class="material-gate__form-hint">Tem a senha deste guia ou da comunidade? A da comunidade vale para todos os materiais.</p>
+    <a href="/#contato" class="material-gate__apply">Quero fazer parte e receber esse tipo de conteúdo</a>
+  </div>
+</div>
+
+
+<div id="material-page-content" class="material-content material-content--visible">
+  
+
+
+<div class="material-content__header">
+  
+    <div class="material-content__page-icon" aria-hidden="true">
+      <span class="material-content__page-icon-inner">
+        
+
+
+
+<svg class="membros-material-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path>
+</svg>
+
+      </span>
+    </div>
+  
+  <span class="material-content__tag material-content__tag--urgent">Urgente</span>
+  <h1 class="material-content__title">BSUIDs e Usernames do WhatsApp: guia completo para integrações</h1>
+  <p class="material-content__desc">BSUIDs já estão em webhooks de produção desde 31 de março de 2026. Se sua integração identifica contatos por telefone, você precisa agir. Este guia cobre tudo: campos, timeline, migração, Send API e checklist.</p>
+  <p class="material-content__updated">Última atualização: 30 de março de 2026</p>
+  <div class="material-content__header-actions">
+    
+    <button type="button" class="material-content__share-btn" id="material-share-btn" data-share-url="https://www.whatsappfounders.com.br/membros/whatsapp-usernames-bsuid/" data-share-title="BSUIDs e Usernames do WhatsApp: guia completo para integrações" aria-label="Compartilhar este material">
+      <svg class="material-content__share-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+      <span class="material-content__share-btn-label">Compartilhar</span>
+    </button>
+  </div>
+</div>
+
+
+  <style>
+    .bsuid-countdown { text-align:center; padding:1.5rem; margin:0 0 2rem; border-radius:12px; background:var(--surface-alt, #1a1f30); border:1px solid rgba(255,255,255,0.08); }
+    .bsuid-countdown__label { font-size:0.85rem; color:var(--text-muted, #94a3b8); margin-bottom:0.5rem; }
+    .bsuid-countdown__timer { display:flex; justify-content:center; gap:0.5rem; align-items:center; }
+    .bsuid-countdown__unit { text-align:center; }
+    .bsuid-countdown__number { display:block; font-size:2.2rem; font-weight:800; line-height:1; color:var(--wa-teal, #25D366); }
+    .bsuid-countdown__text { font-size:0.7rem; color:var(--text-muted, #94a3b8); text-transform:uppercase; letter-spacing:0.05em; }
+    .bsuid-countdown__sep { font-size:1.5rem; font-weight:700; color:var(--text-dim, #64748b); margin:0 0.25rem; }
+    .bsuid-countdown__date { font-size:0.8rem; color:var(--text-dim, #64748b); margin-top:0.5rem; }
+    .bsuid-countdown--live { border-color:var(--wa-teal, #25D366); }
+    .bsuid-countdown--live .bsuid-countdown__label { color:var(--wa-teal, #25D366); font-weight:700; font-size:1rem; }
+
+    .bsuid-rollout { margin:0 0 2.5rem; }
+    .bsuid-rollout__title { font-size:1.3rem; font-weight:700; margin-bottom:1rem; }
+    .bsuid-rollout__track { position:relative; padding-left:24px; }
+    .bsuid-rollout__track::before { content:''; position:absolute; left:7px; top:8px; bottom:8px; width:2px; background:linear-gradient(to bottom, var(--wa-teal, #25D366), var(--text-dim, #64748b)); border-radius:1px; }
+    .bsuid-rollout__step { display:flex; align-items:flex-start; gap:0.75rem; padding:0.5rem 0; position:relative; }
+    .bsuid-rollout__dot { width:16px; height:16px; border-radius:50%; background:var(--text-dim, #64748b); flex-shrink:0; position:relative; left:-24px; margin-right:-24px; z-index:1; margin-top:2px; }
+    .bsuid-rollout__step--done .bsuid-rollout__dot { background:var(--wa-teal, #25D366); }
+    .bsuid-rollout__step--current .bsuid-rollout__dot { background:#ef4444; box-shadow:0 0 10px rgba(239,68,68,0.5); }
+    .bsuid-rollout__step--current .bsuid-rollout__info strong { color:#ef4444; }
+    .bsuid-rollout__info { line-height:1.4; }
+    .bsuid-rollout__info strong { display:block; font-size:0.95rem; }
+    .bsuid-rollout__info span { font-size:0.85rem; color:var(--text-muted, #94a3b8); }
+
+    .field-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin:1.5rem 0; }
+    .field-card { background:var(--surface-alt, #1a1f30); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:1.2rem; }
+    .field-card h4 { font-size:0.95rem; margin:0 0 0.5rem; }
+    .field-card ul { margin:0; padding-left:1.2rem; font-size:0.9rem; }
+    .field-card li { margin:0.25rem 0; color:var(--text-muted, #94a3b8); }
+    .field-card code { font-size:0.8rem; }
+    .field-card--green { border-left:3px solid var(--wa-teal, #25D366); }
+    .field-card--red { border-left:3px solid #ef4444; }
+    .field-card--orange { border-left:3px solid #f59e0b; }
+    .field-card--blue { border-left:3px solid #3b82f6; }
+    @media (max-width: 700px) { .field-grid { grid-template-columns: 1fr; } }
+  </style>
+
+  <!-- Countdown -->
+  <div class="bsuid-countdown bsuid-countdown--live" id="bsuid-countdown">
+    <div class="bsuid-countdown__label">BSUIDs em produção — rollout ativo</div>
+    <div class="bsuid-countdown__date" style="font-size:1.1rem; font-weight:700; color:var(--wa-teal, #25D366);">31 de março de 2026</div>
+  </div>
+
+  <!-- Rollout timeline -->
+  <div class="bsuid-rollout" id="bsuid-rollout">
+    <h2 class="bsuid-rollout__title">Timeline de rollout</h2>
+    <div class="bsuid-rollout__track">
+      <div class="bsuid-rollout__step bsuid-rollout__step--done">
+        <div class="bsuid-rollout__dot"></div>
+        <div class="bsuid-rollout__info">
+          <strong>16/fev/2026: BSUIDs de teste</strong>
+          <span>Meta App Dashboard permite testar webhooks com BSUIDs simulados</span>
+        </div>
+      </div>
+      <div class="bsuid-rollout__step bsuid-rollout__step--current">
+        <div class="bsuid-rollout__dot"></div>
+        <div class="bsuid-rollout__info">
+          <strong>31/mar/2026: BSUIDs em produção ← AGORA</strong>
+          <span>Todos os webhooks de produção passam a incluir BSUIDs. Campos de telefone podem ser omitidos quando usuário adota username.</span>
+        </div>
+      </div>
+      <div class="bsuid-rollout__step">
+        <div class="bsuid-rollout__dot"></div>
+        <div class="bsuid-rollout__info">
+          <strong>Início de abril/2026: Contact Book</strong>
+          <span>Meta lança Contact Book: armazena pares telefone + BSUID de interações <strong>futuras</strong> (não retroativo)</span>
+        </div>
+      </div>
+      <div class="bsuid-rollout__step">
+        <div class="bsuid-rollout__dot"></div>
+        <div class="bsuid-rollout__info">
+          <strong>Maio/2026: Envio por BSUID</strong>
+          <span>Send API aceita campo <code>recipient</code> com BSUID. Botão REQUEST_CONTACT_INFO disponível em templates (início de maio).</span>
+        </div>
+      </div>
+      <div class="bsuid-rollout__step">
+        <div class="bsuid-rollout__dot"></div>
+        <div class="bsuid-rollout__info">
+          <strong>Mais adiante em 2026: Usernames para usuários</strong>
+          <span>Usuários poderão adotar usernames. Data exata pendente. BSUIDs já estarão nos webhooks antes disso.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="material-content__body">
+
+    <h2>O que são BSUIDs</h2>
+    <p><strong>Business-Scoped User ID</strong> — identificador único para cada par (usuário + portfólio de negócio). Gerado pela Meta, sempre presente nos webhooks a partir de 31 de março.</p>
+
+    <div class="material-table-wrap"><table>
+      <thead>
+        <tr><th>Propriedade</th><th>Detalhe</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Formato</td><td><code>{ISO 3166-1 alpha-2}.{alfanuméricos}</code> — ex: <code>BR.99887766554433221100</code></td></tr>
+        <tr><td>Tamanho</td><td>Código do país + <code>.</code> + até <strong>128 caracteres alfanuméricos</strong></td></tr>
+        <tr><td>Escopo</td><td>Único por par <strong>portfólio de negócio + usuário</strong> (não global)</td></tr>
+        <tr><td>Persistência</td><td><strong>Regenerado</strong> quando o usuário troca de número de telefone</td></tr>
+        <tr><td>Parent BSUID</td><td>Formato <code>{CC}.ENT.{alfanuméricos}</code> — para portfólios vinculados (linked portfolios)</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="callout">
+      <p><strong>Atenção:</strong> BSUIDs não são globais. Se você tem múltiplos portfólios, o mesmo usuário terá BSUIDs diferentes em cada um. E se o usuário trocar de número, o BSUID muda — a Meta envia um webhook <code>user_id_update</code> com o antigo e o novo.</p>
+    </div>
+
+    <div class="callout">
+      <p><strong>Formato:</strong> Trate o BSUID como <strong>string opaca</strong>. Armazene e envie exatamente como recebido — não trunque, não remova o código do país, não altere casing. O tamanho pode variar (até 128 chars após o ponto), então use <code>TEXT</code> no banco, não <code>VARCHAR(n)</code>.</p>
+    </div>
+
+    <h2>Por que BSUIDs existem</h2>
+    <p>O WhatsApp vai lançar <strong>usernames</strong> mais adiante em 2026. Quando um usuário adotar um username, poderá <strong>esconder o telefone</strong> de empresas nos webhooks.</p>
+    <p>Sem BSUIDs, uma empresa que recebe mensagem de um usuário com username não teria como identificá-lo — perderia o contexto, criaria duplicatas e quebraria fluxos.</p>
+    <p><strong>BSUIDs chegam antes dos usernames.</strong> A Meta já envia BSUIDs em todos os webhooks de produção desde 31/março, mesmo antes de usernames estarem disponíveis para usuários. Isso permite que integrações se adaptem antecipadamente.</p>
+
+    <h2>O que muda nos webhooks</h2>
+
+    <h3>Campos novos (sempre presentes a partir de 31/março)</h3>
+    <div class="field-grid">
+      <div class="field-card field-card--green">
+        <h4 style="color:var(--wa-teal, #25D366);">Mensagens recebidas</h4>
+        <ul>
+          <li><code>contacts[].user_id</code> — BSUID</li>
+          <li><code>contacts[].profile.username</code> — se adotado</li>
+          <li><code>messages[].from_user_id</code> — BSUID remetente</li>
+        </ul>
+      </div>
+      <div class="field-card field-card--blue">
+        <h4 style="color:#3b82f6;">Status (sent/delivered/read)</h4>
+        <ul>
+          <li><code>contacts[]</code> — <strong>novo</strong> em status webhooks</li>
+          <li><code>contacts[].user_id</code> — BSUID</li>
+          <li><code>statuses[].recipient_user_id</code> — BSUID destino</li>
+        </ul>
+        <p style="font-size:0.8rem; color:var(--text-dim); margin-top:0.5rem;">Obs: <code>contacts[]</code> é omitido em status <strong>failed</strong>. <code>username</code> é omitido em status <strong>sent</strong>.</p>
+      </div>
+    </div>
+
+    <h3>Campos que podem ser omitidos</h3>
+    <div class="field-grid">
+      <div class="field-card field-card--red">
+        <h4 style="color:#ef4444;">Podem desaparecer</h4>
+        <ul>
+          <li><code>contacts[].wa_id</code> — telefone</li>
+          <li><code>messages[].from</code> — telefone remetente</li>
+          <li><code>statuses[].recipient_id</code> — telefone destino</li>
+        </ul>
+      </div>
+      <div class="field-card field-card--orange">
+        <h4 style="color:#f59e0b;">Quando são omitidos?</h4>
+        <ul>
+          <li>Usuário adotou username</li>
+          <li><strong>E</strong> não houve interação nos últimos <strong>30 dias por número de negócio</strong></li>
+          <li><strong>E</strong> usuário não está no Contact Book</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p><strong>Regra dos 30 dias:</strong> A visibilidade do telefone é avaliada <strong>por número de negócio</strong>. Se você mandou mensagem do número A há 15 dias, o telefone aparece nos webhooks do número A — mas NÃO nos do número B do mesmo portfólio, a menos que B também tenha interagido.</p>
+    </div>
+
+    <h3>Comparação de payload: antes vs depois</h3>
+
+    <div class="code-block">
+      <div class="code-block__header"><span>Antes (só telefone — sem campos BSUID)</span><span class="code-block__lang">json</span><button class="code-block__copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg> Copiar</button></div>
+      <pre class="language-json" tabindex="0"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"contacts"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+    <span class="token property">"wa_id"</span><span class="token operator">:</span> <span class="token string">"5511999887766"</span><span class="token punctuation">,</span>
+    <span class="token property">"profile"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"João"</span> <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"messages"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+    <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"5511999887766"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"text"</span><span class="token punctuation">,</span>
+    <span class="token property">"text"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token property">"body"</span><span class="token operator">:</span> <span class="token string">"Olá"</span> <span class="token punctuation">}</span>
+    <span class="token comment">// Sem user_id, from_user_id ou username</span>
+  <span class="token punctuation">}</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span></code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-block__header"><span>Depois — BSUID + telefone (interação recente)</span><span class="code-block__lang">json</span><button class="code-block__copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg> Copiar</button></div>
+      <pre class="language-json" tabindex="0"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"contacts"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+    <span class="token property">"user_id"</span><span class="token operator">:</span> <span class="token string">"BR.99887766554433221100"</span><span class="token punctuation">,</span>    <span class="token comment">// ← NOVO: BSUID</span>
+    <span class="token property">"wa_id"</span><span class="token operator">:</span> <span class="token string">"5511999887766"</span><span class="token punctuation">,</span>                <span class="token comment">// presente (interação &lt; 30d)</span>
+    <span class="token property">"profile"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"João"</span><span class="token punctuation">,</span>
+      <span class="token property">"username"</span><span class="token operator">:</span> <span class="token string">"joao.silva"</span>               <span class="token comment">// ← NOVO: se adotou username</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"messages"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+    <span class="token property">"from"</span><span class="token operator">:</span> <span class="token string">"5511999887766"</span><span class="token punctuation">,</span>                 <span class="token comment">// presente</span>
+    <span class="token property">"from_user_id"</span><span class="token operator">:</span> <span class="token string">"BR.99887766554433221100"</span><span class="token punctuation">,</span> <span class="token comment">// ← NOVO: BSUID</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"text"</span><span class="token punctuation">,</span>
+    <span class="token property">"text"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token property">"body"</span><span class="token operator">:</span> <span class="token string">"Olá"</span> <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span></code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-block__header"><span>Depois — BSUID-only (telefone omitido)</span><span class="code-block__lang">json</span><button class="code-block__copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg> Copiar</button></div>
+      <pre class="language-json" tabindex="0"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"contacts"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+    <span class="token property">"user_id"</span><span class="token operator">:</span> <span class="token string">"BR.99887766554433221100"</span><span class="token punctuation">,</span>    <span class="token comment">// ← BSUID: sempre presente</span>
+    <span class="token comment">// wa_id: OMITIDO (username + sem interação 30d)</span>
+    <span class="token property">"profile"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"João"</span><span class="token punctuation">,</span>
+      <span class="token property">"username"</span><span class="token operator">:</span> <span class="token string">"joao.silva"</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"messages"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+    <span class="token comment">// from: OMITIDO</span>
+    <span class="token property">"from_user_id"</span><span class="token operator">:</span> <span class="token string">"BR.99887766554433221100"</span><span class="token punctuation">,</span> <span class="token comment">// ← único identificador</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"text"</span><span class="token punctuation">,</span>
+    <span class="token property">"text"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token property">"body"</span><span class="token operator">:</span> <span class="token string">"Olá"</span> <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span></code></pre>
+    </div>
+
+    <h2>Send API: <code>to</code> vs <code>recipient</code></h2>
+
+    <p>A Meta adiciona o campo <code>recipient</code> para enviar mensagens por BSUID. O campo <code>to</code> (telefone) continua funcionando.</p>
+
+    <div class="material-table-wrap"><table>
+      <thead>
+        <tr><th>Cenário</th><th>Campo</th><th>Disponível</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Tem telefone</td><td><code>"to": "5511999..."</code></td><td>Sempre</td></tr>
+        <tr><td>Só tem BSUID</td><td><code>"recipient": "BR.998..."</code></td><td><strong>Maio/2026</strong> (data exata TBD)</td></tr>
+        <tr><td>Tem ambos</td><td><code>"to"</code></td><td><strong>Phone tem precedência</strong></td></tr>
+        <tr><td>BSUID antes de maio</td><td>—</td><td>Error <strong>131062</strong></td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="callout">
+      <p><strong>Error 131062:</strong> <code>BSUID recipients not supported for this message type.</code> Retornado se você tentar enviar por BSUID antes de maio/2026. Classifique como erro de usuário — <strong>não faça retry</strong>.</p>
+    </div>
+
+    <div class="callout">
+      <p><strong>Auth templates:</strong> Templates de autenticação (one-tap, zero-tap, copy code) <strong>não suportam envio por BSUID</strong> — exigem número de telefone. Isso vale mesmo após maio/2026.</p>
+    </div>
+
+    <h3>Resposta da Send API</h3>
+    <p>Quando você envia para telefone, a resposta inclui <code>wa_id</code> (telefone) mas <strong>não inclui</strong> <code>user_id</code>. Quando envia para BSUID, inclui <code>user_id</code> mas <strong>não inclui</strong> <code>wa_id</code> (a menos que o telefone esteja disponível via Contact Book).</p>
+
+    <div class="code-block">
+      <div class="code-block__header"><span>Guard temporal recomendado</span><span class="code-block__lang">javascript</span><button class="code-block__copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg> Copiar</button></div>
+      <pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">buildSendPayload</span><span class="token punctuation">(</span><span class="token parameter">phone<span class="token punctuation">,</span> bsuid</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>phone<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span> <span class="token literal-property property">to</span><span class="token operator">:</span> phone <span class="token punctuation">}</span><span class="token punctuation">;</span>            <span class="token comment">// Sempre funciona</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>bsuid <span class="token operator">&amp;&amp;</span> <span class="token function">isAfterMay2026</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span> <span class="token literal-property property">recipient</span><span class="token operator">:</span> bsuid <span class="token punctuation">}</span><span class="token punctuation">;</span>     <span class="token comment">// Só a partir de maio/2026</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    <span class="token function">logWarning</span><span class="token punctuation">(</span><span class="token string">"Sem identificador válido para envio"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+    </div>
+
+    <h2>Webhook <code>user_id_update</code></h2>
+
+    <p>Quando um usuário troca de número de telefone, o BSUID é <strong>regenerado</strong>. A Meta envia um webhook dedicado com o BSUID anterior e o atual.</p>
+
+    <div class="code-block">
+      <div class="code-block__header"><span>Payload user_id_update</span><span class="code-block__lang">json</span><button class="code-block__copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg> Copiar</button></div>
+      <pre class="language-json" tabindex="0"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"field"</span><span class="token operator">:</span> <span class="token string">"user_id_update"</span><span class="token punctuation">,</span>
+  <span class="token property">"value"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"contacts"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+      <span class="token property">"profile"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"João"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"wa_id"</span><span class="token operator">:</span> <span class="token string">"5511999887766"</span><span class="token punctuation">,</span>        <span class="token comment">// se disponível</span>
+      <span class="token property">"user_id"</span><span class="token operator">:</span> <span class="token string">"BR.NOVO_BSUID..."</span>    <span class="token comment">// BSUID atual</span>
+    <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token property">"user_id_update"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+      <span class="token property">"wa_id"</span><span class="token operator">:</span> <span class="token string">"5511999887766"</span><span class="token punctuation">,</span>
+      <span class="token property">"detail"</span><span class="token operator">:</span> <span class="token string">"User id for João has been updated."</span><span class="token punctuation">,</span>
+      <span class="token property">"user_id"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"previous"</span><span class="token operator">:</span> <span class="token string">"BR.ANTIGO_BSUID..."</span><span class="token punctuation">,</span>
+        <span class="token property">"current"</span><span class="token operator">:</span> <span class="token string">"BR.NOVO_BSUID..."</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"timestamp"</span><span class="token operator">:</span> <span class="token string">"1711756800"</span>
+    <span class="token punctuation">}</span><span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+    </div>
+
+    <div class="callout">
+      <p><strong>Crítico:</strong> Se você não tratar <code>user_id_update</code>, contatos que trocam de número "desaparecem" — o BSUID antigo não encontra mais ninguém. Inscreva seu app no campo <code>user_id_update</code> no App Dashboard.</p>
+    </div>
+
+    <p>Além do webhook dedicado, a Meta também envia uma <strong>system message</strong> de tipo <code>user_changed_user_id</code> com o texto <code>User &lt;NAME&gt; changed from &lt;OLD_BSUID&gt; to &lt;NEW_BSUID&gt;</code>.</p>
+
+    <h2>Contact Book (início de abril/2026)</h2>
+
+    <div class="material-table-wrap"><table>
+      <thead>
+        <tr><th>Propriedade</th><th>Detalhe</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Hospedagem</td><td>Meta-hosted — <strong>sem integração necessária</strong></td></tr>
+        <tr><td>Gatilho</td><td>Enviar ou receber mensagem/ligação <strong>após o lançamento</strong></td></tr>
+        <tr><td>Retroatividade</td><td><strong>NÃO retroativo</strong> — só captura interações pós-lançamento</td></tr>
+        <tr><td>Escopo</td><td>Nível de portfólio de negócio (não individual por número)</td></tr>
+        <tr><td>Desabilitar</td><td>Disponível desde 16/março/2026 em Meta Business Suite &gt; Business settings &gt; Business info</td></tr>
+        <tr><td>Ao desabilitar</td><td>Para de armazenar e <strong>deleta</strong> dados existentes. Reabilitar começa do zero.</td></tr>
+        <tr><td>Portfólios vinculados</td><td>Dados <strong>não são sincronizados</strong> entre portfólios — cada um é independente</td></tr>
+        <tr><td>Local storage</td><td>Modo opcional em que o Contact Book se comporta diferente com REQUEST_CONTACT_INFO (ver callout abaixo)</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="callout">
+      <p><strong>REQUEST_CONTACT_INFO e Contact Book:</strong> Por padrão, quando o usuário compartilha o telefone via este botão, o telefone <strong>é adicionado automaticamente</strong> ao Contact Book. Exceção: se você habilitou <em>local storage</em> no Contact Book, o telefone <strong>não é adicionado</strong> automaticamente — nesse caso, envie uma mensagem para o telefone do usuário para capturá-lo.</p>
+    </div>
+
+    <h2>REQUEST_CONTACT_INFO (início de maio/2026)</h2>
+    <p>Botão para templates de <strong>utility</strong> e <strong>marketing</strong> que solicita o telefone do usuário. Quando o usuário toca, a Meta dispara um webhook de contatos com telefone e vCard.</p>
+
+    <div class="code-block">
+      <div class="code-block__header"><span>Template com botão REQUEST_CONTACT_INFO</span><span class="code-block__lang">json</span><button class="code-block__copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg> Copiar</button></div>
+      <pre class="language-json" tabindex="0"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"buttons"</span><span class="token punctuation">,</span>
+  <span class="token property">"buttons"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span> <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"REQUEST_CONTACT_INFO"</span> <span class="token punctuation">}</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+<span class="token comment">// Botão não é customizável e não requer parâmetros no envio</span></code></pre>
+    </div>
+
+    <h2>Parent BSUIDs (portfólios vinculados)</h2>
+    <p>Se a sua empresa tem <strong>portfólios vinculados</strong> (linked portfolios), a Meta pode fornecer um <strong>parent BSUID</strong> que funciona em todos os portfólios vinculados.</p>
+
+    <div class="material-table-wrap"><table>
+      <thead>
+        <tr><th>Propriedade</th><th>Detalhe</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Formato</td><td><code>{CC}.ENT.{alfanuméricos}</code> — ex: <code>US.ENT.11815799212886844830</code></td></tr>
+        <tr><td>Webhook</td><td><code>contacts[].parent_user_id</code>, <code>messages[].from_parent_user_id</code></td></tr>
+        <tr><td>Uso</td><td>Qualquer número de negócio nos portfólios vinculados pode usar o parent BSUID</td></tr>
+        <tr><td>Ativação</td><td>Requer contato com o representante Meta (POC)</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Para tech providers e solution partners</h2>
+
+    <div class="callout">
+      <p><strong>Regra crítica para providers:</strong> O BSUID do <strong>cliente</strong> deve ser usado com os números de telefone do <strong>portfólio do cliente</strong>. Usar o BSUID do cliente com números do <strong>seu</strong> portfólio <strong>vai falhar</strong>.</p>
+    </div>
+
+    <p>Se você é tech provider ou solution partner, garanta que:</p>
+    <ul>
+      <li>Cada cliente tem seu próprio conjunto de BSUIDs (escopo por portfólio)</li>
+      <li>Seu sistema associa BSUIDs ao portfólio correto</li>
+      <li>O envio por BSUID usa sempre o número de telefone do portfólio do cliente</li>
+    </ul>
+
+    <h2>O que pode quebrar</h2>
+
+    <div class="material-table-wrap"><table>
+      <thead>
+        <tr><th>Risco</th><th>Severidade</th><th>Causa</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Contatos perdidos</strong></td><td style="color:#ef4444;">Alto</td><td>Sistema cria novo contato em vez de associar ao existente (sem lookup por BSUID)</td></tr>
+        <tr><td><strong>Contatos duplicados</strong></td><td style="color:#ef4444;">Alto</td><td>Mesmo usuário com dois registros: um pelo phone, outro pelo BSUID</td></tr>
+        <tr><td><strong>Envio falha</strong></td><td style="color:#ef4444;">Alto</td><td>Contato BSUID-only + envio por phone = mensagem não vai</td></tr>
+        <tr><td><strong>UI crashes</strong></td><td style="color:#f59e0b;">Médio</td><td><code>phone.replace()</code> ou <code>wa.me/phone</code> quando phone é null</td></tr>
+        <tr><td><strong>Histórico perdido</strong></td><td style="color:#f59e0b;">Médio</td><td>user_id_update não tratado → contato "desaparece" ao trocar número</td></tr>
+        <tr><td><strong>Campanhas falham</strong></td><td style="color:#f59e0b;">Médio</td><td>Automações que dependem de phone como destinatário</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Migração: roteiro completo</h2>
+
+    <figure class="mermaid-wrapper"><div class="mermaid" data-caption="Roteiro de migração para BSUIDs: do banco de dados ao monitoramento em produção." data-mermaid-source="flowchart TD
+      A[&quot;1 · Auditar dependênciasde phone_id&quot;] --&gt; B[&quot;2 · Schema: colunas bsuide username, phone nullable&quot;]
+      B --&gt; C[&quot;3 · Indexes únicos(bsuid, instance_id)&quot;]
+      C --&gt; D[&quot;4 · Parser webhook:user_id, from_user_id,recipient_user_id, username&quot;]
+      D --&gt; E[&quot;5 · Resolução dual:phone-first, BSUID-fallback&quot;]
+      E --&gt; F[&quot;6 · Backfill automático(cruzado bidirecional)&quot;]
+      F --&gt; G[&quot;7 · Handleruser_id_update&quot;]
+      G --&gt; H[&quot;8 · Send API:to vs recipient +guard temporal&quot;]
+      H --&gt; I[&quot;9 · UI null-safe+ @username fallback&quot;]
+      I --&gt; J[&quot;10 · Testar no MetaApp Dashboard&quot;]
+      J --&gt; K([&quot;Deploy + Monitorar&quot;])" data-processed="true"><svg id="mermaid-1775584685149" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="flowchart" style="max-width: 321.25px;" viewBox="0 0 321.25 1480" role="graphics-document document" aria-roledescription="flowchart-v2"><style>#mermaid-1775584685149{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;fill:#ccc;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#mermaid-1775584685149 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#mermaid-1775584685149 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#mermaid-1775584685149 .error-icon{fill:#a44141;}#mermaid-1775584685149 .error-text{fill:#ddd;stroke:#ddd;}#mermaid-1775584685149 .edge-thickness-normal{stroke-width:1px;}#mermaid-1775584685149 .edge-thickness-thick{stroke-width:3.5px;}#mermaid-1775584685149 .edge-pattern-solid{stroke-dasharray:0;}#mermaid-1775584685149 .edge-thickness-invisible{stroke-width:0;fill:none;}#mermaid-1775584685149 .edge-pattern-dashed{stroke-dasharray:3;}#mermaid-1775584685149 .edge-pattern-dotted{stroke-dasharray:2;}#mermaid-1775584685149 .marker{fill:#30363d;stroke:#30363d;}#mermaid-1775584685149 .marker.cross{stroke:#30363d;}#mermaid-1775584685149 svg{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;}#mermaid-1775584685149 p{margin:0;}#mermaid-1775584685149 .label{font-family:"trebuchet ms",verdana,arial,sans-serif;color:#ccc;}#mermaid-1775584685149 .cluster-label text{fill:#F9FFFE;}#mermaid-1775584685149 .cluster-label span{color:#F9FFFE;}#mermaid-1775584685149 .cluster-label span p{background-color:transparent;}#mermaid-1775584685149 .label text,#mermaid-1775584685149 span{fill:#ccc;color:#ccc;}#mermaid-1775584685149 .node rect,#mermaid-1775584685149 .node circle,#mermaid-1775584685149 .node ellipse,#mermaid-1775584685149 .node polygon,#mermaid-1775584685149 .node path{fill:#1f2020;stroke:#ccc;stroke-width:1px;}#mermaid-1775584685149 .rough-node .label text,#mermaid-1775584685149 .node .label text,#mermaid-1775584685149 .image-shape .label,#mermaid-1775584685149 .icon-shape .label{text-anchor:middle;}#mermaid-1775584685149 .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#mermaid-1775584685149 .rough-node .label,#mermaid-1775584685149 .node .label,#mermaid-1775584685149 .image-shape .label,#mermaid-1775584685149 .icon-shape .label{text-align:center;}#mermaid-1775584685149 .node.clickable{cursor:pointer;}#mermaid-1775584685149 .root .anchor path{fill:#30363d!important;stroke-width:0;stroke:#30363d;}#mermaid-1775584685149 .arrowheadPath{fill:lightgrey;}#mermaid-1775584685149 .edgePath .path{stroke:#30363d;stroke-width:1px;}#mermaid-1775584685149 .flowchart-link{stroke:#30363d;fill:none;}#mermaid-1775584685149 .edgeLabel{background-color:hsl(0, 0%, 34.4117647059%);text-align:center;}#mermaid-1775584685149 .edgeLabel p{background-color:hsl(0, 0%, 34.4117647059%);}#mermaid-1775584685149 .edgeLabel rect{opacity:0.5;background-color:hsl(0, 0%, 34.4117647059%);fill:hsl(0, 0%, 34.4117647059%);}#mermaid-1775584685149 .labelBkg{background-color:rgba(87.75, 87.75, 87.75, 0.5);}#mermaid-1775584685149 .cluster rect{fill:hsl(180, 1.5873015873%, 28.3529411765%);stroke:rgba(255, 255, 255, 0.25);stroke-width:1px;}#mermaid-1775584685149 .cluster text{fill:#F9FFFE;}#mermaid-1775584685149 .cluster span{color:#F9FFFE;}#mermaid-1775584685149 div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:12px;background:#161B22;border:1px solid rgba(255, 255, 255, 0.25);border-radius:2px;pointer-events:none;z-index:100;}#mermaid-1775584685149 .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#ccc;}#mermaid-1775584685149 rect.text{fill:none;stroke-width:0;}#mermaid-1775584685149 .icon-shape,#mermaid-1775584685149 .image-shape{background-color:hsl(0, 0%, 34.4117647059%);text-align:center;}#mermaid-1775584685149 .icon-shape p,#mermaid-1775584685149 .image-shape p{background-color:hsl(0, 0%, 34.4117647059%);padding:2px;}#mermaid-1775584685149 .icon-shape .label rect,#mermaid-1775584685149 .image-shape .label rect{opacity:0.5;background-color:hsl(0, 0%, 34.4117647059%);fill:hsl(0, 0%, 34.4117647059%);}#mermaid-1775584685149 .label-icon{display:inline-block;height:1em;overflow:visible;vertical-align:-0.125em;}#mermaid-1775584685149 .node .label-icon path{fill:currentColor;stroke:revert;stroke-width:revert;}#mermaid-1775584685149 .node .neo-node{stroke:#ccc;}#mermaid-1775584685149 [data-look="neo"].node rect,#mermaid-1775584685149 [data-look="neo"].cluster rect,#mermaid-1775584685149 [data-look="neo"].node polygon{stroke:url(#mermaid-1775584685149-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#mermaid-1775584685149 [data-look="neo"].node path{stroke:url(#mermaid-1775584685149-gradient);stroke-width:1px;}#mermaid-1775584685149 [data-look="neo"].node .outer-path{filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#mermaid-1775584685149 [data-look="neo"].node .neo-line path{stroke:#ccc;filter:none;}#mermaid-1775584685149 [data-look="neo"].node circle{stroke:url(#mermaid-1775584685149-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#mermaid-1775584685149 [data-look="neo"].node circle .state-start{fill:#000000;}#mermaid-1775584685149 [data-look="neo"].icon-shape .icon{fill:url(#mermaid-1775584685149-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#mermaid-1775584685149 [data-look="neo"].icon-shape .icon-neo path{stroke:url(#mermaid-1775584685149-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#mermaid-1775584685149 :root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}</style><g><marker id="mermaid-1775584685149_flowchart-v2-pointEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1775584685149_flowchart-v2-pointStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="4.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 5 L 10 10 L 10 0 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1775584685149_flowchart-v2-pointEnd-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="11.5" refY="7" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="14" orient="auto"><path d="M 0 0 L 11.5 7 L 0 14 z" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1775584685149_flowchart-v2-pointStart-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="1" refY="7" markerUnits="userSpaceOnUse" markerWidth="11.5" markerHeight="14" orient="auto"><polygon points="0,7 11.5,14 11.5,0" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></polygon></marker><marker id="mermaid-1775584685149_flowchart-v2-circleEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="11" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="mermaid-1775584685149_flowchart-v2-circleStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-1" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="mermaid-1775584685149_flowchart-v2-circleEnd-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refY="5" refX="12.25" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="mermaid-1775584685149_flowchart-v2-circleStart-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-2" refY="5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="mermaid-1775584685149_flowchart-v2-crossEnd" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="12" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1775584685149_flowchart-v2-crossStart" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="-1" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1775584685149_flowchart-v2-crossEnd-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="17.7" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5;"></path></marker><marker id="mermaid-1775584685149_flowchart-v2-crossStart-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="-3.5" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5; stroke-dasharray: 1, 0;"></path></marker><g class="root"><g class="clusters"></g><g class="edgePaths"><path d="M160.625,88L160.625,93C160.625,98,160.625,108,160.625,117.333C160.625,126.667,160.625,135.333,160.625,139.667L160.625,144" id="mermaid-1775584685149-L_A_B_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_A_B_0" data-points="W3sieCI6MTYwLjYyNSwieSI6ODh9LHsieCI6MTYwLjYyNSwieSI6MTE4fSx7IngiOjE2MC42MjUsInkiOjE0OH1d" data-look="classic" marker-end="url(#mermaid-1775584685149_flowchart-v2-pointEnd)"></path><path d="M160.625,228L160.625,233C160.625,238,160.625,248,160.625,257.333C160.625,266.667,160.625,275.333,160.625,279.667L160.625,284" id="mermaid-1775584685149-L_B_C_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_B_C_0" data-points="W3sieCI6MTYwLjYyNSwieSI6MjI4fSx7IngiOjE2MC42MjUsInkiOjI1OH0seyJ4IjoxNjAuNjI1LCJ5IjoyODh9XQ==" data-look="classic" marker-end="url(#mermaid-1775584685149_flowchart-v2-pointEnd)"></path><path d="M160.625,368L160.625,373C160.625,378,160.625,388,160.625,397.333C160.625,406.667,160.625,415.333,160.625,419.667L160.625,424" id="mermaid-1775584685149-L_C_D_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_C_D_0" data-points="W3sieCI6MTYwLjYyNSwieSI6MzY4fSx7IngiOjE2MC42MjUsInkiOjM5OH0seyJ4IjoxNjAuNjI1LCJ5Ijo0Mjh9XQ==" data-look="classic" marker-end="url(#mermaid-1775584685149_flowchart-v2-pointEnd)"></path><path d="M160.625,532L160.625,537C160.625,542,160.625,552,160.625,561.333C160.625,570.667,160.625,579.333,160.625,583.667L160.625,588" id="mermaid-1775584685149-L_D_E_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_D_E_0" data-points="W3sieCI6MTYwLjYyNSwieSI6NTMyfSx7IngiOjE2MC42MjUsInkiOjU2Mn0seyJ4IjoxNjAuNjI1LCJ5Ijo1OTJ9XQ==" data-look="classic" marker-end="url(#mermaid-1775584685149_flowchart-v2-pointEnd)"></path><path d="M160.625,672L160.625,677C160.625,682,160.625,692,160.625,701.333C160.625,710.667,160.625,719.333,160.625,723.667L160.625,728" id="mermaid-1775584685149-L_E_F_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_E_F_0" data-points="W3sieCI6MTYwLjYyNSwieSI6NjcyfSx7IngiOjE2MC42MjUsInkiOjcwMn0seyJ4IjoxNjAuNjI1LCJ5Ijo3MzJ9XQ==" data-look="classic" marker-end="url(#mermaid-1775584685149_flowchart-v2-pointEnd)"></path><path d="M160.625,836L160.625,841C160.625,846,160.625,856,160.625,865.333C160.625,874.667,160.625,883.333,160.625,887.667L160.625,892" id="mermaid-1775584685149-L_F_G_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_F_G_0" data-points="W3sieCI6MTYwLjYyNSwieSI6ODM2fSx7IngiOjE2MC42MjUsInkiOjg2Nn0seyJ4IjoxNjAuNjI1LCJ5Ijo4OTZ9XQ==" data-look="classic" marker-end="url(#mermaid-1775584685149_flowchart-v2-pointEnd)"></path><path d="M160.625,952L160.625,957C160.625,962,160.625,972,160.625,981.333C160.625,990.667,160.625,999.333,160.625,1003.667L160.625,1008" id="mermaid-1775584685149-L_G_H_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_G_H_0" data-points="W3sieCI6MTYwLjYyNSwieSI6OTUyfSx7IngiOjE2MC42MjUsInkiOjk4Mn0seyJ4IjoxNjAuNjI1LCJ5IjoxMDEyfV0=" data-look="classic" marker-end="url(#mermaid-1775584685149_flowchart-v2-pointEnd)"></path><path d="M160.625,1092L160.625,1097C160.625,1102,160.625,1112,160.625,1121.333C160.625,1130.667,160.625,1139.333,160.625,1143.667L160.625,1148" id="mermaid-1775584685149-L_H_I_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_H_I_0" data-points="W3sieCI6MTYwLjYyNSwieSI6MTA5Mn0seyJ4IjoxNjAuNjI1LCJ5IjoxMTIyfSx7IngiOjE2MC42MjUsInkiOjExNTJ9XQ==" data-look="classic" marker-end="url(#mermaid-1775584685149_flowchart-v2-pointEnd)"></path><path d="M160.625,1232L160.625,1237C160.625,1242,160.625,1252,160.625,1261.333C160.625,1270.667,160.625,1279.333,160.625,1283.667L160.625,1288" id="mermaid-1775584685149-L_I_J_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_I_J_0" data-points="W3sieCI6MTYwLjYyNSwieSI6MTIzMn0seyJ4IjoxNjAuNjI1LCJ5IjoxMjYyfSx7IngiOjE2MC42MjUsInkiOjEyOTJ9XQ==" data-look="classic" marker-end="url(#mermaid-1775584685149_flowchart-v2-pointEnd)"></path><path d="M160.625,1372L160.625,1377C160.625,1382,160.625,1392,160.697,1401.417C160.77,1410.834,160.915,1419.667,160.987,1424.084L161.059,1428.501" id="mermaid-1775584685149-L_J_K_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style=";" data-edge="true" data-et="edge" data-id="L_J_K_0" data-points="W3sieCI6MTYwLjYyNSwieSI6MTM3Mn0seyJ4IjoxNjAuNjI1LCJ5IjoxNDAyfSx7IngiOjE2MS4xMjUsInkiOjE0MzIuNX1d" data-look="classic" marker-end="url(#mermaid-1775584685149_flowchart-v2-pointEnd)"></path></g><g class="edgeLabels"><g class="edgeLabel"><g class="label" data-id="L_A_B_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_B_C_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_C_D_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_D_E_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_E_F_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_F_G_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_G_H_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_H_I_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_I_J_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel"><g class="label" data-id="L_J_K_0" transform="translate(0, 0)"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" class="labelBkg" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 200px; text-align: center;"><span class="edgeLabel"></span></div></foreignObject></g></g></g><g class="nodes"><g class="node default" id="mermaid-1775584685149-flowchart-A-0" data-look="classic" transform="translate(160.625, 48)"><rect class="basic label-container" style="" x="-142" y="-40" width="284" height="80"></rect><g class="label" style="" transform="translate(-110, -24)"><rect></rect><foreignObject width="220" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 220px; text-align: center; width: 220px;"><span class="nodeLabel"><p>1 · Auditar dependênciasde phone_id</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1775584685149-flowchart-B-1" data-look="classic" transform="translate(160.625, 188)"><rect class="basic label-container" style="" x="-142" y="-40" width="284" height="80"></rect><g class="label" style="" transform="translate(-110, -24)"><rect></rect><foreignObject width="220" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 220px; text-align: center; width: 220px;"><span class="nodeLabel"><p>2 · Schema: colunas bsuide username, phone nullable</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1775584685149-flowchart-C-3" data-look="classic" transform="translate(160.625, 328)"><rect class="basic label-container" style="" x="-142" y="-40" width="284" height="80"></rect><g class="label" style="" transform="translate(-110, -24)"><rect></rect><foreignObject width="220" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 220px; text-align: center; width: 220px;"><span class="nodeLabel"><p>3 · Indexes únicos(bsuid, instance_id)</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1775584685149-flowchart-D-5" data-look="classic" transform="translate(160.625, 480)"><rect class="basic label-container" style="" x="-152.625" y="-52" width="305.25" height="104"></rect><g class="label" style="" transform="translate(-120.625, -36)"><rect></rect><foreignObject width="241.25" height="72"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 220px; text-align: center; width: 220px;"><span class="nodeLabel"><p>4 · Parser webhook:user_id, from_user_id,recipient_user_id, username</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1775584685149-flowchart-E-7" data-look="classic" transform="translate(160.625, 632)"><rect class="basic label-container" style="" x="-142" y="-40" width="284" height="80"></rect><g class="label" style="" transform="translate(-110, -24)"><rect></rect><foreignObject width="220" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 220px; text-align: center; width: 220px;"><span class="nodeLabel"><p>5 · Resolução dual:phone-first, BSUID-fallback</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1775584685149-flowchart-F-9" data-look="classic" transform="translate(160.625, 784)"><rect class="basic label-container" style="" x="-142" y="-52" width="284" height="104"></rect><g class="label" style="" transform="translate(-110, -36)"><rect></rect><foreignObject width="220" height="72"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 220px; text-align: center; width: 220px;"><span class="nodeLabel"><p>6 · Backfill automático(cruzado bidirecional)</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1775584685149-flowchart-G-11" data-look="classic" transform="translate(160.625, 924)"><rect class="basic label-container" style="" x="-129.2890625" y="-28" width="258.578125" height="56"></rect><g class="label" style="" transform="translate(-97.2890625, -12)"><rect></rect><foreignObject width="194.578125" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 220px; text-align: center;"><span class="nodeLabel"><p>7 · Handleruser_id_update</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1775584685149-flowchart-H-13" data-look="classic" transform="translate(160.625, 1052)"><rect class="basic label-container" style="" x="-142" y="-40" width="284" height="80"></rect><g class="label" style="" transform="translate(-110, -24)"><rect></rect><foreignObject width="220" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 220px; text-align: center; width: 220px;"><span class="nodeLabel"><p>8 · Send API:to vs recipient +guard temporal</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1775584685149-flowchart-I-15" data-look="classic" transform="translate(160.625, 1192)"><rect class="basic label-container" style="" x="-142" y="-40" width="284" height="80"></rect><g class="label" style="" transform="translate(-110, -24)"><rect></rect><foreignObject width="220" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 220px; text-align: center; width: 220px;"><span class="nodeLabel"><p>9 · UI null-safe+ @username fallback</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1775584685149-flowchart-J-17" data-look="classic" transform="translate(160.625, 1332)"><rect class="basic label-container" style="" x="-142" y="-40" width="284" height="80"></rect><g class="label" style="" transform="translate(-110, -24)"><rect></rect><foreignObject width="220" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 220px; text-align: center; width: 220px;"><span class="nodeLabel"><p>10 · Testar no MetaApp Dashboard</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1775584685149-flowchart-K-19" data-look="classic" transform="translate(160.625, 1452)"><g class="basic label-container outer-path"><path d="M-62.2890625 -20 C-22.416943028333883 -20, 17.455176443332235 -20, 62.2890625 -20 C62.2890625 -20, 62.2890625 -20, 62.2890625 -20 C62.78921434973972 -19.983961103665365, 63.28936619947944 -19.96792220733073, 63.57046689961426 -19.95890785500673 C64.01321793805063 -19.9161961948148, 64.455968976487 -19.87348453462287, 64.84660573369011 -19.835800276464923 C65.29215036013078 -19.76376807651218, 65.73769498657144 -19.691735876559438, 66.11223507402744 -19.63118313982131 C66.57876084742583 -19.52470167640831, 67.04528662082421 -19.41822021299531, 67.36215417819014 -19.34589726078059 C67.85260163594197 -19.20033502973109, 68.34304909369378 -19.05477279868159, 68.59122686047242 -18.981114940213374 C68.83835193729654 -18.890170627542926, 69.08547701412067 -18.79922631487248, 69.79440259758748 -18.538335146920435 C70.07316657900037 -18.414934601588648, 70.35193056041328 -18.29153405625686, 70.96673728235116 -18.019377358048384 C71.23475682961073 -17.87955173191778, 71.50277637687032 -17.73972610578717, 72.10341354007875 -17.42637408246779 C72.52589035789346 -17.17026615275915, 72.94836717570817 -16.91415822305051, 73.19976052421097 -16.761762097836815 C73.61454168722594 -16.47242871410473, 74.0293228502409 -16.183095330372648, 74.25127310982433 -16.02827243735913 C74.56111712160491 -15.781180083259551, 74.87096113338549 -15.53408772915997, 75.25363040615576 -15.22891916738269 C75.48877626080717 -15.015365923806668, 75.72392211545856 -14.801812680230643, 76.20271351206972 -14.366987001954552 C76.44864156357811 -14.113046097703615, 76.6945696150865 -13.85910519345268, 77.0946224415063 -13.44601780522634 C77.39953660178222 -13.087848282459026, 77.70445076205813 -12.729678759691712, 77.9256921493606 -12.469796037174671 C78.14600792364203 -12.174592970817493, 78.36632369792346 -11.879389904460316, 78.69250759193912 -11.442333202443397 C78.88091117547606 -11.152894704684737, 79.06931475901298 -10.863456206926076, 79.39191776010692 -10.367851366210504 C79.60085959063149 -9.99685398845955, 79.80980142115604 -9.625856610708595, 80.02104862746 -9.250765804816705 C80.16749058914138 -8.946675938029307, 80.31393255082274 -8.642586071241908, 80.57731496031624 -8.095666862447882 C80.74534380428602 -7.680632369225844, 80.9133726482558 -7.265597876003807, 81.05843094099521 -6.907301088426162 C81.1908606727022 -6.508443836337054, 81.32329040440918 -6.109586584247945, 81.46241956073321 -5.690551732620655 C81.53066208381223 -5.430313415623772, 81.59890460689124 -5.1700750986268895, 81.78762074363647 -4.45041867912629 C81.84255942671712 -4.16832015280194, 81.89749810979777 -3.8862216264775884, 82.032698168289 -3.191997900667592 C82.08672496353749 -2.772976745517786, 82.14075175878597 -2.3539555903679807, 82.19664475898396 -1.920460518153639 C82.2145610254583 -1.6414002060659376, 82.23247729193263 -1.3623398939782363, 82.27878682401376 -0.6410315514331033 C82.27878682401376 -0.1391528749238763, 82.27878682401376 0.3627258015853507, 82.27878682401376 0.6410315514330984 C82.26203313122807 0.9019838399076439, 82.24527943844238 1.1629361283821895, 82.19664475898396 1.9204605181536252 C82.14883226358563 2.2912847908179055, 82.10101976818731 2.662109063482186, 82.032698168289 3.191997900667578 C81.94397005004001 3.647598035181741, 81.85524193179101 4.1031981696959035, 81.78762074363647 4.450418679126286 C81.68395171017566 4.845753634155625, 81.58028267671487 5.241088589184964, 81.46241956073321 5.690551732620641 C81.3644718120537 5.985554745788894, 81.26652406337419 6.280557758957148, 81.05843094099521 6.9073010884261485 C80.93622566012145 7.209150494862694, 80.8140203792477 7.51099990129924, 80.57731496031624 8.095666862447876 C80.41965254980867 8.423056231302015, 80.2619901393011 8.750445600156151, 80.02104862746 9.250765804816702 C79.89208358374835 9.479756299053502, 79.7631185400367 9.708746793290302, 79.39191776010692 10.367851366210498 C79.24847044085116 10.588224969585998, 79.10502312159542 10.808598572961499, 78.69250759193912 11.442333202443386 C78.51639718945458 11.678305097784946, 78.34028678697004 11.914276993126505, 77.9256921493606 12.469796037174667 C77.69142087281547 12.744984409017844, 77.45714959627034 13.02017278086102, 77.09462244150632 13.44601780522633 C76.81877786953626 13.73084997304595, 76.54293329756621 14.01568214086557, 76.20271351206974 14.366987001954548 C75.84824345992341 14.688907324550199, 75.49377340777708 15.010827647145849, 75.25363040615578 15.228919167382678 C74.92171717701608 15.493611135039616, 74.58980394787639 15.758303102696553, 74.25127310982433 16.02827243735913 C73.97624457244552 16.22012043924109, 73.70121603506672 16.411968441123047, 73.19976052421099 16.761762097836808 C72.87161940200174 16.960683174491333, 72.5434782797925 17.15960425114586, 72.10341354007876 17.426374082467788 C71.7843387736151 17.592835183754733, 71.46526400715146 17.759296285041675, 70.96673728235116 18.01937735804838 C70.62903774109165 18.168866927463, 70.29133819983214 18.318356496877616, 69.79440259758749 18.53833514692043 C69.37795480349621 18.69159178474723, 68.96150700940493 18.84484842257403, 68.59122686047243 18.981114940213367 C68.18611229175465 19.10135081771904, 67.78099772303688 19.221586695224712, 67.36215417819017 19.345897260780585 C67.02949392604509 19.421824792521683, 66.6968336739 19.497752324262777, 66.11223507402745 19.631183139821307 C65.85349900630403 19.673013580722657, 65.59476293858063 19.714844021624003, 64.84660573369013 19.835800276464923 C64.57471039102373 19.86202969316996, 64.30281504835733 19.888259109874994, 63.57046689961426 19.95890785500673 C63.164622240393705 19.971922503299226, 62.75877758117315 19.98493715159172, 62.28906250000001 20 C62.28906250000001 20, 62.2890625 20, 62.2890625 20 C14.311057995509984 20, -33.66694650898003 20, -62.28906249999999 20 C-62.571704422912916 19.99093622366131, -62.85434634582583 19.981872447322623, -63.57046689961425 19.95890785500673 C-63.89838080612969 19.927274394819356, -64.22629471264511 19.895640934631984, -64.84660573369013 19.835800276464923 C-65.21893090306158 19.77560563050576, -65.59125607243304 19.71541098454659, -66.11223507402744 19.631183139821307 C-66.52911708004956 19.536032542356082, -66.94599908607168 19.440881944890858, -67.36215417819014 19.34589726078059 C-67.75121270558857 19.23042673205862, -68.140271232987 19.11495620333665, -68.5912268604724 18.981114940213377 C-68.96238342103983 18.84452589499093, -69.33353998160726 18.70793684976848, -69.79440259758748 18.538335146920435 C-70.10693800600302 18.399984992648367, -70.41947341441856 18.2616348383763, -70.96673728235116 18.019377358048384 C-71.25078997361769 17.87118725095907, -71.53484266488421 17.722997143869758, -72.10341354007875 17.42637408246779 C-72.34662082438484 17.27894039747679, -72.58982810869094 17.131506712485788, -73.19976052421096 16.761762097836822 C-73.55598514457984 16.513275223382774, -73.91220976494871 16.264788348928725, -74.25127310982433 16.028272437359135 C-74.5932351639516 15.755566799185061, -74.93519721807888 15.482861161010987, -75.25363040615576 15.228919167382692 C-75.46487813071215 15.037069573249095, -75.67612585526852 14.845219979115498, -76.20271351206972 14.366987001954561 C-76.49178387431054 14.068498119822799, -76.78085423655136 13.770009237691037, -77.09462244150632 13.446017805226337 C-77.38488568776641 13.105058079722617, -77.67514893402652 12.7640983542189, -77.9256921493606 12.469796037174675 C-78.20443607425759 12.096304571906686, -78.48317999915456 11.722813106638698, -78.69250759193912 11.4423332024434 C-78.92869183726134 11.079490777278338, -79.16487608258358 10.716648352113275, -79.3919177601069 10.367851366210513 C-79.55269913744844 10.082367749860724, -79.71348051478998 9.796884133510936, -80.02104862746 9.250765804816707 C-80.17331680734482 8.934577671268775, -80.32558498722962 8.618389537720843, -80.57731496031624 8.095666862447883 C-80.75851956299601 7.6480879904761885, -80.93972416567578 7.200509118504493, -81.05843094099521 6.9073010884261645 C-81.15676833184114 6.611124535133693, -81.25510572268708 6.314947981841222, -81.46241956073321 5.690551732620649 C-81.5854874094511 5.221240687516273, -81.708555258169 4.751929642411897, -81.78762074363647 4.450418679126293 C-81.84752125048296 4.142842236446177, -81.90742175732944 3.835265793766062, -82.032698168289 3.191997900667594 C-82.0669972750901 2.9259808014430053, -82.1012963818912 2.659963702218416, -82.19664475898396 1.9204605181536503 C-82.22406318949047 1.4933963312561784, -82.25148161999697 1.0663321443587064, -82.27878682401376 0.6410315514331058 C-82.27878682401376 0.3018646788047969, -82.27878682401376 -0.037302193823511964, -82.27878682401376 -0.6410315514330961 C-82.25180829572788 -1.0612439061617744, -82.224829767442 -1.4814562608904527, -82.19664475898396 -1.9204605181536227 C-82.13189770075398 -2.422625916032585, -82.067150642524 -2.924791313911547, -82.032698168289 -3.1919979006675847 C-81.9519974261293 -3.6063791555497406, -81.8712966839696 -4.020760410431897, -81.78762074363647 -4.450418679126283 C-81.6679209305347 -4.906885944710477, -81.54822111743294 -5.363353210294671, -81.46241956073322 -5.690551732620639 C-81.31006779758282 -6.149410969272649, -81.15771603443241 -6.60827020592466, -81.05843094099521 -6.907301088426139 C-80.911021308098 -7.271405731653599, -80.7636116752008 -7.635510374881059, -80.57731496031624 -8.095666862447873 C-80.37285012552074 -8.520242466747362, -80.16838529072524 -8.944818071046853, -80.02104862746 -9.250765804816698 C-79.85855510449711 -9.539289509090748, -79.69606158153422 -9.827813213364799, -79.39191776010692 -10.367851366210505 C-79.25094509356184 -10.58442323848512, -79.10997242701676 -10.800995110759736, -78.69250759193912 -11.442333202443393 C-78.44972544324389 -11.767639163786248, -78.20694329454865 -12.092945125129102, -77.9256921493606 -12.469796037174667 C-77.60311970046496 -12.848707990539793, -77.28054725156933 -13.22761994390492, -77.09462244150632 -13.44601780522633 C-76.73918324780311 -13.813037954825402, -76.3837440540999 -14.180058104424475, -76.20271351206974 -14.366987001954541 C-75.89656067705202 -14.645026906357495, -75.59040784203432 -14.923066810760451, -75.25363040615578 -15.228919167382674 C-75.0389522566316 -15.400119278802725, -74.82427410710743 -15.571319390222778, -74.25127310982433 -16.028272437359128 C-73.84767129755983 -16.309807589953987, -73.44406948529532 -16.591342742548843, -73.19976052421099 -16.761762097836804 C-72.79556701113601 -17.006786580767585, -72.39137349806106 -17.25181106369837, -72.10341354007876 -17.426374082467785 C-71.7350493179561 -17.618549461200633, -71.36668509583345 -17.81072483993348, -70.96673728235118 -18.01937735804838 C-70.53885955888555 -18.208786133684914, -70.1109818354199 -18.39819490932145, -69.79440259758749 -18.53833514692043 C-69.51020668175528 -18.64292187102493, -69.22601076592308 -18.747508595129432, -68.59122686047243 -18.981114940213367 C-68.1547844739843 -19.11064874959021, -67.71834208749615 -19.240182558967057, -67.36215417819017 -19.345897260780582 C-67.06927269652918 -19.41274554773942, -66.77639121486821 -19.479593834698257, -66.11223507402745 -19.631183139821303 C-65.80499501536576 -19.680855329823487, -65.49775495670406 -19.73052751982567, -64.84660573369014 -19.835800276464923 C-64.35778606048659 -19.8829561224472, -63.86896638728303 -19.93011196842948, -63.57046689961426 -19.95890785500673 C-63.07120148781852 -19.974918325001845, -62.57193607602278 -19.990928794996965, -62.28906250000001 -20 C-62.28906250000001 -20, -62.2890625 -20, -62.2890625 -20" stroke="none" stroke-width="0" fill="#1f2020" style=""></path><path d="M-62.2890625 -20 C-23.237744484388507 -20, 15.813573531222985 -20, 62.2890625 -20 M-62.2890625 -20 C-19.08906177805106 -20, 24.110938943897878 -20, 62.2890625 -20 M62.2890625 -20 C62.2890625 -20, 62.2890625 -20, 62.2890625 -20 M62.2890625 -20 C62.2890625 -20, 62.2890625 -20, 62.2890625 -20 M62.2890625 -20 C62.731220553771635 -19.985820851823988, 63.17337860754327 -19.971641703647972, 63.57046689961426 -19.95890785500673 M62.2890625 -20 C62.57844147860024 -19.990720179398302, 62.86782045720048 -19.981440358796604, 63.57046689961426 -19.95890785500673 M63.57046689961426 -19.95890785500673 C64.04729850803434 -19.912908483216352, 64.52413011645443 -19.86690911142598, 64.84660573369011 -19.835800276464923 M63.57046689961426 -19.95890785500673 C64.00047272286803 -19.9174257103951, 64.43047854612179 -19.875943565783476, 64.84660573369011 -19.835800276464923 M64.84660573369011 -19.835800276464923 C65.22633719518956 -19.77440823863116, 65.606068656689 -19.713016200797394, 66.11223507402744 -19.63118313982131 M64.84660573369011 -19.835800276464923 C65.32230356974014 -19.75889313942417, 65.79800140579017 -19.681986002383418, 66.11223507402744 -19.63118313982131 M66.11223507402744 -19.63118313982131 C66.58450790598317 -19.523389947795657, 67.05678073793892 -19.41559675577, 67.36215417819014 -19.34589726078059 M66.11223507402744 -19.63118313982131 C66.56949558073592 -19.526816413068765, 67.02675608744438 -19.422449686316224, 67.36215417819014 -19.34589726078059 M67.36215417819014 -19.34589726078059 C67.79880786587256 -19.216300738318424, 68.235461553555 -19.086704215856262, 68.59122686047242 -18.981114940213374 M67.36215417819014 -19.34589726078059 C67.74740255406246 -19.231557565031675, 68.13265092993477 -19.117217869282765, 68.59122686047242 -18.981114940213374 M68.59122686047242 -18.981114940213374 C68.89032901323272 -18.871042583127593, 69.18943116599301 -18.76097022604181, 69.79440259758748 -18.538335146920435 M68.59122686047242 -18.981114940213374 C69.00994907719743 -18.82702129383282, 69.42867129392246 -18.672927647452273, 69.79440259758748 -18.538335146920435 M69.79440259758748 -18.538335146920435 C70.13199664436021 -18.388892276785732, 70.46959069113294 -18.239449406651033, 70.96673728235116 -18.019377358048384 M69.79440259758748 -18.538335146920435 C70.26139030005814 -18.331613543734683, 70.72837800252879 -18.12489194054893, 70.96673728235116 -18.019377358048384 M70.96673728235116 -18.019377358048384 C71.31910220288546 -17.835548804706143, 71.67146712341977 -17.651720251363898, 72.10341354007875 -17.42637408246779 M70.96673728235116 -18.019377358048384 C71.21469336597083 -17.890018828047456, 71.46264944959049 -17.76066029804653, 72.10341354007875 -17.42637408246779 M72.10341354007875 -17.42637408246779 C72.39243335011551 -17.25116857515458, 72.68145316015226 -17.075963067841368, 73.19976052421097 -16.761762097836815 M72.10341354007875 -17.42637408246779 C72.44305137191579 -17.220483632874735, 72.78268920375282 -17.01459318328168, 73.19976052421097 -16.761762097836815 M73.19976052421097 -16.761762097836815 C73.47185052716658 -16.57196389036137, 73.74394053012219 -16.38216568288593, 74.25127310982433 -16.02827243735913 M73.19976052421097 -16.761762097836815 C73.42625130297976 -16.603771935195493, 73.65274208174857 -16.44578177255417, 74.25127310982433 -16.02827243735913 M74.25127310982433 -16.02827243735913 C74.5769373645574 -15.768563860499281, 74.90260161929048 -15.50885528363943, 75.25363040615576 -15.22891916738269 M74.25127310982433 -16.02827243735913 C74.60228174905659 -15.748352388303573, 74.95329038828886 -15.468432339248016, 75.25363040615576 -15.22891916738269 M75.25363040615576 -15.22891916738269 C75.62157898509102 -14.8947580033796, 75.98952756402629 -14.560596839376508, 76.20271351206972 -14.366987001954552 M75.25363040615576 -15.22891916738269 C75.617726539367 -14.898256692656037, 75.98182267257822 -14.567594217929384, 76.20271351206972 -14.366987001954552 M76.20271351206972 -14.366987001954552 C76.5068162885827 -14.052975917902618, 76.81091906509569 -13.738964833850682, 77.0946224415063 -13.44601780522634 M76.20271351206972 -14.366987001954552 C76.38242710936356 -14.18141795798793, 76.56214070665739 -13.995848914021309, 77.0946224415063 -13.44601780522634 M77.0946224415063 -13.44601780522634 C77.32670730564692 -13.173397717803889, 77.55879216978755 -12.90077763038144, 77.9256921493606 -12.469796037174671 M77.0946224415063 -13.44601780522634 C77.41891300411015 -13.065087657736115, 77.74320356671399 -12.684157510245889, 77.9256921493606 -12.469796037174671 M77.9256921493606 -12.469796037174671 C78.12811579322798 -12.198566795565705, 78.33053943709537 -11.92733755395674, 78.69250759193912 -11.442333202443397 M77.9256921493606 -12.469796037174671 C78.19761180365806 -12.105448472806192, 78.46953145795553 -11.741100908437712, 78.69250759193912 -11.442333202443397 M78.69250759193912 -11.442333202443397 C78.94815804694076 -11.04958545180155, 79.2038085019424 -10.656837701159702, 79.39191776010692 -10.367851366210504 M78.69250759193912 -11.442333202443397 C78.9304220359922 -11.076832727404346, 79.16833648004527 -10.711332252365295, 79.39191776010692 -10.367851366210504 M79.39191776010692 -10.367851366210504 C79.56269824623952 -10.064613319682616, 79.73347873237212 -9.76137527315473, 80.02104862746 -9.250765804816705 M79.39191776010692 -10.367851366210504 C79.59419774745054 -10.008682765612093, 79.79647773479415 -9.649514165013683, 80.02104862746 -9.250765804816705 M80.02104862746 -9.250765804816705 C80.2412699324434 -8.793471553037595, 80.4614912374268 -8.336177301258484, 80.57731496031624 -8.095666862447882 M80.02104862746 -9.250765804816705 C80.16340487989451 -8.95516000070058, 80.30576113232904 -8.659554196584455, 80.57731496031624 -8.095666862447882 M80.57731496031624 -8.095666862447882 C80.69385431597564 -7.807812400834027, 80.81039367163503 -7.519957939220172, 81.05843094099521 -6.907301088426162 M80.57731496031624 -8.095666862447882 C80.69208343496956 -7.812186511156679, 80.80685190962288 -7.528706159865476, 81.05843094099521 -6.907301088426162 M81.05843094099521 -6.907301088426162 C81.15813825589105 -6.606998542163146, 81.25784557078687 -6.30669599590013, 81.46241956073321 -5.690551732620655 M81.05843094099521 -6.907301088426162 C81.16701458347399 -6.5802644577340415, 81.27559822595278 -6.253227827041921, 81.46241956073321 -5.690551732620655 M81.46241956073321 -5.690551732620655 C81.53771450377386 -5.403419481771941, 81.6130094468145 -5.116287230923227, 81.78762074363647 -4.45041867912629 M81.46241956073321 -5.690551732620655 C81.5394045295027 -5.396974681206029, 81.61638949827221 -5.103397629791403, 81.78762074363647 -4.45041867912629 M81.78762074363647 -4.45041867912629 C81.88456536414418 -3.9526285420719947, 81.9815099846519 -3.454838405017699, 82.032698168289 -3.191997900667592 M81.78762074363647 -4.45041867912629 C81.86443445877997 -4.055996486448841, 81.94124817392348 -3.66157429377139, 82.032698168289 -3.191997900667592 M82.032698168289 -3.191997900667592 C82.08083955913719 -2.818622779841894, 82.12898094998539 -2.4452476590161965, 82.19664475898396 -1.920460518153639 M82.032698168289 -3.191997900667592 C82.08532432178525 -2.7838398463601073, 82.1379504752815 -2.3756817920526228, 82.19664475898396 -1.920460518153639 M82.19664475898396 -1.920460518153639 C82.21848739383363 -1.58024384931272, 82.24033002868327 -1.240027180471801, 82.27878682401376 -0.6410315514331033 M82.19664475898396 -1.920460518153639 C82.22212053638049 -1.5236547215254308, 82.24759631377701 -1.1268489248972227, 82.27878682401376 -0.6410315514331033 M82.27878682401376 -0.6410315514331033 C82.27878682401376 -0.14208875734148257, 82.27878682401376 0.35685403675013816, 82.27878682401376 0.6410315514330984 M82.27878682401376 -0.6410315514331033 C82.27878682401376 -0.12893338185415038, 82.27878682401376 0.38316478772480256, 82.27878682401376 0.6410315514330984 M82.27878682401376 0.6410315514330984 C82.24899291806825 1.105095685742489, 82.21919901212273 1.5691598200518797, 82.19664475898396 1.9204605181536252 M82.27878682401376 0.6410315514330984 C82.26091623398615 0.9193804159938516, 82.24304564395852 1.1977292805546047, 82.19664475898396 1.9204605181536252 M82.19664475898396 1.9204605181536252 C82.15617677042157 2.234322246135404, 82.11570878185915 2.5481839741171837, 82.032698168289 3.191997900667578 M82.19664475898396 1.9204605181536252 C82.13496952289962 2.3988014700708797, 82.07329428681528 2.8771424219881343, 82.032698168289 3.191997900667578 M82.032698168289 3.191997900667578 C81.95621944688817 3.5846999712773853, 81.87974072548732 3.9774020418871925, 81.78762074363647 4.450418679126286 M82.032698168289 3.191997900667578 C81.94800289642455 3.626890221339479, 81.86330762456011 4.06178254201138, 81.78762074363647 4.450418679126286 M81.78762074363647 4.450418679126286 C81.67353513781775 4.885476539127391, 81.55944953199904 5.320534399128498, 81.46241956073321 5.690551732620641 M81.78762074363647 4.450418679126286 C81.69286300976572 4.811770986637106, 81.59810527589497 5.173123294147926, 81.46241956073321 5.690551732620641 M81.46241956073321 5.690551732620641 C81.38138671553922 5.934609751514359, 81.30035387034525 6.178667770408079, 81.05843094099521 6.9073010884261485 M81.46241956073321 5.690551732620641 C81.3284822731074 6.093949502940829, 81.19454498548158 6.497347273261017, 81.05843094099521 6.9073010884261485 M81.05843094099521 6.9073010884261485 C80.96016046571027 7.150031062310318, 80.86188999042534 7.392761036194488, 80.57731496031624 8.095666862447876 M81.05843094099521 6.9073010884261485 C80.88583677408275 7.333612017581125, 80.7132426071703 7.7599229467361, 80.57731496031624 8.095666862447876 M80.57731496031624 8.095666862447876 C80.38943008983418 8.485813816096114, 80.20154521935211 8.87596076974435, 80.02104862746 9.250765804816702 M80.57731496031624 8.095666862447876 C80.41570200664576 8.431259618707902, 80.25408905297527 8.766852374967929, 80.02104862746 9.250765804816702 M80.02104862746 9.250765804816702 C79.87617561837627 9.508002502427814, 79.73130260929251 9.765239200038925, 79.39191776010692 10.367851366210498 M80.02104862746 9.250765804816702 C79.8444526678842 9.56432981332355, 79.66785670830838 9.8778938218304, 79.39191776010692 10.367851366210498 M79.39191776010692 10.367851366210498 C79.11906881832522 10.78702061098685, 78.84621987654353 11.206189855763203, 78.69250759193912 11.442333202443386 M79.39191776010692 10.367851366210498 C79.15147004464345 10.73724362641455, 78.91102232917997 11.106635886618601, 78.69250759193912 11.442333202443386 M78.69250759193912 11.442333202443386 C78.53337844300454 11.655551765052024, 78.37424929406995 11.868770327660664, 77.9256921493606 12.469796037174667 M78.69250759193912 11.442333202443386 C78.48001868119744 11.727048984699247, 78.26752977045574 12.011764766955109, 77.9256921493606 12.469796037174667 M77.9256921493606 12.469796037174667 C77.71724570417692 12.714649092626162, 77.50879925899322 12.959502148077657, 77.09462244150632 13.44601780522633 M77.9256921493606 12.469796037174667 C77.70594642503374 12.727921868854931, 77.48620070070687 12.986047700535195, 77.09462244150632 13.44601780522633 M77.09462244150632 13.44601780522633 C76.75065523266977 13.801192188583112, 76.40668802383321 14.156366571939897, 76.20271351206974 14.366987001954548 M77.09462244150632 13.44601780522633 C76.7832323101959 13.767553681409572, 76.47184217888548 14.089089557592812, 76.20271351206974 14.366987001954548 M76.20271351206974 14.366987001954548 C75.98020974030158 14.569059040347192, 75.75770596853341 14.771131078739836, 75.25363040615578 15.228919167382678 M76.20271351206974 14.366987001954548 C75.91001749749253 14.632805778081389, 75.61732148291534 14.89862455420823, 75.25363040615578 15.228919167382678 M75.25363040615578 15.228919167382678 C74.99437063741222 15.435671933763476, 74.73511086866866 15.642424700144273, 74.25127310982433 16.02827243735913 M75.25363040615578 15.228919167382678 C74.9505104323429 15.47064928013718, 74.64739045853003 15.712379392891684, 74.25127310982433 16.02827243735913 M74.25127310982433 16.02827243735913 C73.89711648869061 16.275316765068975, 73.5429598675569 16.52236109277882, 73.19976052421099 16.761762097836808 M74.25127310982433 16.02827243735913 C73.91660833267244 16.261720098495587, 73.58194355552054 16.49516775963204, 73.19976052421099 16.761762097836808 M73.19976052421099 16.761762097836808 C72.95006331204527 16.91313001523536, 72.70036609987956 17.064497932633913, 72.10341354007876 17.426374082467788 M73.19976052421099 16.761762097836808 C72.79780883112907 17.0054275763134, 72.39585713804716 17.24909305479, 72.10341354007876 17.426374082467788 M72.10341354007876 17.426374082467788 C71.73500624323273 17.61857193325622, 71.36659894638672 17.810769784044655, 70.96673728235116 18.01937735804838 M72.10341354007876 17.426374082467788 C71.6813723475533 17.646552702278033, 71.25933115502784 17.866731322088278, 70.96673728235116 18.01937735804838 M70.96673728235116 18.01937735804838 C70.67304578520756 18.149385871785125, 70.37935428806398 18.279394385521872, 69.79440259758749 18.53833514692043 M70.96673728235116 18.01937735804838 C70.52476423527916 18.215025715322536, 70.08279118820717 18.41067407259669, 69.79440259758749 18.53833514692043 M69.79440259758749 18.53833514692043 C69.39335928509496 18.685922793121424, 68.99231597260243 18.833510439322417, 68.59122686047243 18.981114940213367 M69.79440259758749 18.53833514692043 C69.48320712823921 18.652857956299982, 69.17201165889094 18.767380765679533, 68.59122686047243 18.981114940213367 M68.59122686047243 18.981114940213367 C68.10216307112911 19.126266505742247, 67.6130992817858 19.27141807127113, 67.36215417819017 19.345897260780585 M68.59122686047243 18.981114940213367 C68.30704500884771 19.06545862207461, 68.02286315722297 19.14980230393585, 67.36215417819017 19.345897260780585 M67.36215417819017 19.345897260780585 C67.1020396414886 19.405266706376736, 66.84192510478704 19.464636151972883, 66.11223507402745 19.631183139821307 M67.36215417819017 19.345897260780585 C66.87391789836916 19.457334005610253, 66.38568161854815 19.56877075043992, 66.11223507402745 19.631183139821307 M66.11223507402745 19.631183139821307 C65.81083440430598 19.679911262704774, 65.50943373458449 19.728639385588238, 64.84660573369013 19.835800276464923 M66.11223507402745 19.631183139821307 C65.77759440124201 19.68528524862008, 65.44295372845657 19.739387357418853, 64.84660573369013 19.835800276464923 M64.84660573369013 19.835800276464923 C64.33758589437615 19.88490480817762, 63.82856605506218 19.934009339890316, 63.57046689961426 19.95890785500673 M64.84660573369013 19.835800276464923 C64.46729422337941 19.872392001675763, 64.08798271306871 19.908983726886603, 63.57046689961426 19.95890785500673 M63.57046689961426 19.95890785500673 C63.179936124596914 19.971431416839494, 62.78940534957957 19.983954978672262, 62.28906250000001 20 M63.57046689961426 19.95890785500673 C63.10363185951016 19.973878346103586, 62.636796819406065 19.98884883720044, 62.28906250000001 20 M62.28906250000001 20 C62.28906250000001 20, 62.2890625 20, 62.2890625 20 M62.28906250000001 20 C62.28906250000001 20, 62.2890625 20, 62.2890625 20 M62.2890625 20 C33.173377831442835 20, 4.057693162885663 20, -62.28906249999999 20 M62.2890625 20 C30.230063977354654 20, -1.8289345452906929 20, -62.28906249999999 20 M-62.28906249999999 20 C-62.63893716712741 19.98878020041495, -62.98881183425483 19.9775604008299, -63.57046689961425 19.95890785500673 M-62.28906249999999 20 C-62.547258647917765 19.991720152084593, -62.805454795835544 19.983440304169182, -63.57046689961425 19.95890785500673 M-63.57046689961425 19.95890785500673 C-63.889833670585084 19.92809892670591, -64.20920044155592 19.89728999840509, -64.84660573369013 19.835800276464923 M-63.57046689961425 19.95890785500673 C-64.0420581657537 19.913414012733735, -64.51364943189314 19.86792017046074, -64.84660573369013 19.835800276464923 M-64.84660573369013 19.835800276464923 C-65.18938240481341 19.780382802550495, -65.53215907593672 19.724965328636067, -66.11223507402744 19.631183139821307 M-64.84660573369013 19.835800276464923 C-65.1158943620766 19.7922637793919, -65.38518299046308 19.748727282318875, -66.11223507402744 19.631183139821307 M-66.11223507402744 19.631183139821307 C-66.41343936699414 19.56243522549336, -66.71464365996083 19.493687311165413, -67.36215417819014 19.34589726078059 M-66.11223507402744 19.631183139821307 C-66.4568203690155 19.552533794869476, -66.80140566400357 19.473884449917644, -67.36215417819014 19.34589726078059 M-67.36215417819014 19.34589726078059 C-67.70517372508651 19.24409085980809, -68.0481932719829 19.14228445883559, -68.5912268604724 18.981114940213377 M-67.36215417819014 19.34589726078059 C-67.71813414877057 19.240244274089314, -68.074114119351 19.13459128739804, -68.5912268604724 18.981114940213377 M-68.5912268604724 18.981114940213377 C-68.95372270032897 18.84771312027135, -69.31621854018553 18.71431130032932, -69.79440259758748 18.538335146920435 M-68.5912268604724 18.981114940213377 C-69.06216091027714 18.807806856618594, -69.5330949600819 18.634498773023815, -69.79440259758748 18.538335146920435 M-69.79440259758748 18.538335146920435 C-70.06523851826599 18.418444118898197, -70.3360744389445 18.29855309087596, -70.96673728235116 18.019377358048384 M-69.79440259758748 18.538335146920435 C-70.1365689329816 18.38686826024517, -70.47873526837571 18.235401373569903, -70.96673728235116 18.019377358048384 M-70.96673728235116 18.019377358048384 C-71.20804122801204 17.89348924415966, -71.44934517367291 17.767601130270936, -72.10341354007875 17.42637408246779 M-70.96673728235116 18.019377358048384 C-71.40242324484042 17.79208027048792, -71.83810920732967 17.564783182927453, -72.10341354007875 17.42637408246779 M-72.10341354007875 17.42637408246779 C-72.46858400148558 17.20500560278314, -72.83375446289241 16.98363712309849, -73.19976052421096 16.761762097836822 M-72.10341354007875 17.42637408246779 C-72.48343102538989 17.196005249641548, -72.86344851070103 16.965636416815304, -73.19976052421096 16.761762097836822 M-73.19976052421096 16.761762097836822 C-73.53088583054499 16.530783418321686, -73.86201113687902 16.299804738806554, -74.25127310982433 16.028272437359135 M-73.19976052421096 16.761762097836822 C-73.44442920486156 16.59109181775144, -73.68909788551218 16.420421537666055, -74.25127310982433 16.028272437359135 M-74.25127310982433 16.028272437359135 C-74.60996162590011 15.742227890890977, -74.96865014197589 15.45618334442282, -75.25363040615576 15.228919167382692 M-74.25127310982433 16.028272437359135 C-74.5876540590857 15.760017581796186, -74.92403500834708 15.491762726233237, -75.25363040615576 15.228919167382692 M-75.25363040615576 15.228919167382692 C-75.53309379021523 14.975117916175838, -75.8125571742747 14.721316664968983, -76.20271351206972 14.366987001954561 M-75.25363040615576 15.228919167382692 C-75.5777340104514 14.934576849272856, -75.90183761474702 14.64023453116302, -76.20271351206972 14.366987001954561 M-76.20271351206972 14.366987001954561 C-76.46564523304022 14.09548841295676, -76.72857695401073 13.823989823958957, -77.09462244150632 13.446017805226337 M-76.20271351206972 14.366987001954561 C-76.44545712395659 14.1163342930602, -76.68820073584345 13.86568158416584, -77.09462244150632 13.446017805226337 M-77.09462244150632 13.446017805226337 C-77.31099865038628 13.191849998120865, -77.52737485926623 12.937682191015393, -77.9256921493606 12.469796037174675 M-77.09462244150632 13.446017805226337 C-77.42149506582322 13.062054621124467, -77.74836769014014 12.678091437022598, -77.9256921493606 12.469796037174675 M-77.9256921493606 12.469796037174675 C-78.1725279143161 12.13905859933509, -78.41936367927161 11.808321161495506, -78.69250759193912 11.4423332024434 M-77.9256921493606 12.469796037174675 C-78.1516630987243 12.1670155514043, -78.37763404808801 11.864235065633924, -78.69250759193912 11.4423332024434 M-78.69250759193912 11.4423332024434 C-78.93237150777735 11.073837815235883, -79.17223542361556 10.705342428028368, -79.3919177601069 10.367851366210513 M-78.69250759193912 11.4423332024434 C-78.94496630270199 11.054488828055648, -79.19742501346485 10.666644453667896, -79.3919177601069 10.367851366210513 M-79.3919177601069 10.367851366210513 C-79.60964410554588 9.981256192700423, -79.82737045098487 9.594661019190331, -80.02104862746 9.250765804816707 M-79.3919177601069 10.367851366210513 C-79.59837272790114 10.00126966505943, -79.80482769569537 9.634687963908348, -80.02104862746 9.250765804816707 M-80.02104862746 9.250765804816707 C-80.15816545416891 8.966039780325564, -80.29528228087781 8.681313755834422, -80.57731496031624 8.095666862447883 M-80.02104862746 9.250765804816707 C-80.14393849834202 8.99558235850818, -80.26682836922404 8.740398912199653, -80.57731496031624 8.095666862447883 M-80.57731496031624 8.095666862447883 C-80.69220173180061 7.811894315696872, -80.80708850328499 7.5281217689458595, -81.05843094099521 6.9073010884261645 M-80.57731496031624 8.095666862447883 C-80.71313323567145 7.760193096452813, -80.84895151102666 7.4247193304577435, -81.05843094099521 6.9073010884261645 M-81.05843094099521 6.9073010884261645 C-81.17733419594663 6.54918342917342, -81.29623745089805 6.191065769920675, -81.46241956073321 5.690551732620649 M-81.05843094099521 6.9073010884261645 C-81.17458425780244 6.557465804720605, -81.29073757460965 6.207630521015045, -81.46241956073321 5.690551732620649 M-81.46241956073321 5.690551732620649 C-81.58182911094747 5.23519136522723, -81.70123866116174 4.779830997833812, -81.78762074363647 4.450418679126293 M-81.46241956073321 5.690551732620649 C-81.52848237626148 5.438625585206006, -81.59454519178973 5.186699437791365, -81.78762074363647 4.450418679126293 M-81.78762074363647 4.450418679126293 C-81.84126574372195 4.174962941562165, -81.89491074380742 3.899507203998037, -82.032698168289 3.191997900667594 M-81.78762074363647 4.450418679126293 C-81.84738484830831 4.143542632784383, -81.90714895298015 3.8366665864424734, -82.032698168289 3.191997900667594 M-82.032698168289 3.191997900667594 C-82.06620964222569 2.93208952640369, -82.09972111616237 2.6721811521397862, -82.19664475898396 1.9204605181536503 M-82.032698168289 3.191997900667594 C-82.09474778714254 2.710753309922752, -82.15679740599607 2.22950871917791, -82.19664475898396 1.9204605181536503 M-82.19664475898396 1.9204605181536503 C-82.22613416838452 1.461139163317117, -82.25562357778509 1.0018178084805835, -82.27878682401376 0.6410315514331058 M-82.19664475898396 1.9204605181536503 C-82.21644503982105 1.6120551616168868, -82.23624532065816 1.3036498050801233, -82.27878682401376 0.6410315514331058 M-82.27878682401376 0.6410315514331058 C-82.27878682401376 0.17990899196211263, -82.27878682401376 -0.2812135675088805, -82.27878682401376 -0.6410315514330961 M-82.27878682401376 0.6410315514331058 C-82.27878682401376 0.18321815372825012, -82.27878682401376 -0.2745952439766055, -82.27878682401376 -0.6410315514330961 M-82.27878682401376 -0.6410315514330961 C-82.25350974909212 -1.0347423966252611, -82.22823267417048 -1.4284532418174258, -82.19664475898396 -1.9204605181536227 M-82.27878682401376 -0.6410315514330961 C-82.25700930020676 -0.9802340632279085, -82.23523177639977 -1.3194365750227208, -82.19664475898396 -1.9204605181536227 M-82.19664475898396 -1.9204605181536227 C-82.1500930090194 -2.2815066981959875, -82.10354125905484 -2.6425528782383525, -82.032698168289 -3.1919979006675847 M-82.19664475898396 -1.9204605181536227 C-82.15902162498654 -2.212258115909487, -82.12139849098912 -2.5040557136653514, -82.032698168289 -3.1919979006675847 M-82.032698168289 -3.1919979006675847 C-81.94672635252329 -3.6334450044748476, -81.86075453675757 -4.074892108282111, -81.78762074363647 -4.450418679126283 M-82.032698168289 -3.1919979006675847 C-81.93744363709962 -3.681109786272785, -81.84218910591022 -4.170221671877985, -81.78762074363647 -4.450418679126283 M-81.78762074363647 -4.450418679126283 C-81.65842502878395 -4.943097933635956, -81.52922931393144 -5.435777188145629, -81.46241956073322 -5.690551732620639 M-81.78762074363647 -4.450418679126283 C-81.69319607535714 -4.810500863185482, -81.5987714070778 -5.170583047244682, -81.46241956073322 -5.690551732620639 M-81.46241956073322 -5.690551732620639 C-81.3419872706647 -6.053274602027424, -81.22155498059617 -6.41599747143421, -81.05843094099521 -6.907301088426139 M-81.46241956073322 -5.690551732620639 C-81.37270028642426 -5.960771892014142, -81.2829810121153 -6.230992051407646, -81.05843094099521 -6.907301088426139 M-81.05843094099521 -6.907301088426139 C-80.86805769381671 -7.377526689573377, -80.67768444663821 -7.847752290720614, -80.57731496031624 -8.095666862447873 M-81.05843094099521 -6.907301088426139 C-80.94054368143307 -7.198484898739724, -80.82265642187093 -7.489668709053309, -80.57731496031624 -8.095666862447873 M-80.57731496031624 -8.095666862447873 C-80.43060138776039 -8.40032073502769, -80.28388781520452 -8.704974607607504, -80.02104862746 -9.250765804816698 M-80.57731496031624 -8.095666862447873 C-80.41167048439104 -8.43963116093058, -80.24602600846583 -8.783595459413284, -80.02104862746 -9.250765804816698 M-80.02104862746 -9.250765804816698 C-79.7740758288462 -9.689291017463225, -79.5271030302324 -10.127816230109751, -79.39191776010692 -10.367851366210505 M-80.02104862746 -9.250765804816698 C-79.81320413637721 -9.619814745271123, -79.60535964529443 -9.988863685725548, -79.39191776010692 -10.367851366210505 M-79.39191776010692 -10.367851366210505 C-79.14874308699537 -10.741432965652663, -78.90556841388381 -11.115014565094821, -78.69250759193912 -11.442333202443393 M-79.39191776010692 -10.367851366210505 C-79.1696065125727 -10.709381141351669, -78.94729526503848 -11.05091091649283, -78.69250759193912 -11.442333202443393 M-78.69250759193912 -11.442333202443393 C-78.47103845414235 -11.739081670837557, -78.24956931634557 -12.035830139231718, -77.9256921493606 -12.469796037174667 M-78.69250759193912 -11.442333202443393 C-78.40218828009343 -11.831334631683204, -78.11186896824775 -12.220336060923014, -77.9256921493606 -12.469796037174667 M-77.9256921493606 -12.469796037174667 C-77.6701768012229 -12.769938904332408, -77.41466145308519 -13.07008177149015, -77.09462244150632 -13.44601780522633 M-77.9256921493606 -12.469796037174667 C-77.62065133144382 -12.828114339213954, -77.31561051352706 -13.186432641253242, -77.09462244150632 -13.44601780522633 M-77.09462244150632 -13.44601780522633 C-76.79156923137487 -13.758945125818338, -76.4885160212434 -14.071872446410346, -76.20271351206974 -14.366987001954541 M-77.09462244150632 -13.44601780522633 C-76.7454605453776 -13.806556129704035, -76.39629864924888 -14.167094454181738, -76.20271351206974 -14.366987001954541 M-76.20271351206974 -14.366987001954541 C-75.87324345740785 -14.666202988298515, -75.54377340274596 -14.965418974642489, -75.25363040615578 -15.228919167382674 M-76.20271351206974 -14.366987001954541 C-75.85268023616523 -14.684877961758037, -75.50264696026073 -15.002768921561533, -75.25363040615578 -15.228919167382674 M-75.25363040615578 -15.228919167382674 C-75.01375623937851 -15.42021243206789, -74.77388207260122 -15.611505696753108, -74.25127310982433 -16.028272437359128 M-75.25363040615578 -15.228919167382674 C-74.93167587174032 -15.485669341009027, -74.60972133732486 -15.742419514635381, -74.25127310982433 -16.028272437359128 M-74.25127310982433 -16.028272437359128 C-73.87911825960504 -16.28787155054829, -73.50696340938576 -16.54747066373745, -73.19976052421099 -16.761762097836804 M-74.25127310982433 -16.028272437359128 C-73.95117415386008 -16.237608477965363, -73.65107519789582 -16.446944518571602, -73.19976052421099 -16.761762097836804 M-73.19976052421099 -16.761762097836804 C-72.92303635318896 -16.92951391652209, -72.64631218216695 -17.097265735207376, -72.10341354007876 -17.426374082467785 M-73.19976052421099 -16.761762097836804 C-72.82514903252324 -16.9888537855594, -72.4505375408355 -17.215945473281995, -72.10341354007876 -17.426374082467785 M-72.10341354007876 -17.426374082467785 C-71.71844564738566 -17.62721158550207, -71.33347775469257 -17.82804908853636, -70.96673728235118 -18.01937735804838 M-72.10341354007876 -17.426374082467785 C-71.81519854647863 -17.576735660018464, -71.52698355287849 -17.727097237569144, -70.96673728235118 -18.01937735804838 M-70.96673728235118 -18.01937735804838 C-70.6979646272529 -18.13835503960285, -70.42919197215463 -18.25733272115732, -69.79440259758749 -18.53833514692043 M-70.96673728235118 -18.01937735804838 C-70.73217007669518 -18.123213301803354, -70.4976028710392 -18.227049245558327, -69.79440259758749 -18.53833514692043 M-69.79440259758749 -18.53833514692043 C-69.52518047965106 -18.637411374983017, -69.25595836171463 -18.7364876030456, -68.59122686047243 -18.981114940213367 M-69.79440259758749 -18.53833514692043 C-69.41621893259655 -18.677510231528576, -69.03803526760561 -18.81668531613672, -68.59122686047243 -18.981114940213367 M-68.59122686047243 -18.981114940213367 C-68.31462360305461 -19.06320933509485, -68.0380203456368 -19.14530372997633, -67.36215417819017 -19.345897260780582 M-68.59122686047243 -18.981114940213367 C-68.24443066289443 -19.08404223128413, -67.89763446531641 -19.186969522354897, -67.36215417819017 -19.345897260780582 M-67.36215417819017 -19.345897260780582 C-66.91443912418833 -19.448085300242735, -66.46672407018649 -19.550273339704887, -66.11223507402745 -19.631183139821303 M-67.36215417819017 -19.345897260780582 C-66.94839715372261 -19.440334601598387, -66.53464012925507 -19.53477194241619, -66.11223507402745 -19.631183139821303 M-66.11223507402745 -19.631183139821303 C-65.80834670433202 -19.680313454744155, -65.5044583346366 -19.72944376966701, -64.84660573369014 -19.835800276464923 M-66.11223507402745 -19.631183139821303 C-65.72886976972501 -19.693162669178587, -65.34550446542255 -19.75514219853587, -64.84660573369014 -19.835800276464923 M-64.84660573369014 -19.835800276464923 C-64.38981407881447 -19.87986641803844, -63.93302242393879 -19.923932559611956, -63.57046689961426 -19.95890785500673 M-64.84660573369014 -19.835800276464923 C-64.42928080983545 -19.876059109962533, -64.01195588598074 -19.916317943460143, -63.57046689961426 -19.95890785500673 M-63.57046689961426 -19.95890785500673 C-63.15499572075423 -19.972231207047177, -62.7395245418942 -19.98555455908763, -62.28906250000001 -20 M-63.57046689961426 -19.95890785500673 C-63.24244040577565 -19.969427026199295, -62.91441391193705 -19.97994619739186, -62.28906250000001 -20 M-62.28906250000001 -20 C-62.28906250000001 -20, -62.28906250000001 -20, -62.2890625 -20 M-62.28906250000001 -20 C-62.28906250000001 -20, -62.2890625 -20, -62.2890625 -20" stroke="#ccc" stroke-width="1.3" fill="none" stroke-dasharray="0 0" style=""></path></g><g class="label" style="" transform="translate(-69.2890625, -12)"><rect></rect><foreignObject width="138.578125" height="24"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; line-height: 1.5; max-width: 220px; text-align: center;"><span class="nodeLabel"><p>Deploy + Monitorar</p></span></div></foreignObject></g></g></g></g></g><defs><filter id="mermaid-1775584685149-drop-shadow" height="130%" width="130%"><feDropShadow dx="4" dy="4" stdDeviation="0" flood-opacity="0.06" flood-color="#FFFFFF"></feDropShadow></filter></defs><defs><filter id="mermaid-1775584685149-drop-shadow-small" height="150%" width="150%"><feDropShadow dx="2" dy="2" stdDeviation="0" flood-opacity="0.06" flood-color="#FFFFFF"></feDropShadow></filter></defs><linearGradient id="mermaid-1775584685149-gradient" gradientUnits="objectBoundingBox" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#cccccc" stop-opacity="1"></stop><stop offset="100%" stop-color="hsl(180, 0%, 18.3529411765%)" stop-opacity="1"></stop></linearGradient></svg></div><div class="mermaid-wrapper__actions"><button class="mermaid-wrapper__btn" title="Expandir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg></button><button class="mermaid-wrapper__btn" title="Baixar PNG"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></button><button type="button" class="mermaid-wrapper__btn mermaid-wrapper__btn--share" title="Compartilhar link do material" aria-label="Compartilhar material"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg></button></div><div class="mermaid-wrapper__expand-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg> Clique para expandir</div><figcaption class="mermaid-wrapper__caption">Roteiro de migração para BSUIDs: do banco de dados ao monitoramento em produção.</figcaption></figure>
+
+    <h3>1. Auditar código</h3>
+    <p>Busque todas as referências que assumem que <code>from</code>/<code>wa_id</code> são sempre números E.164. Inclua lookups por telefone, validações, links <code>wa.me/</code>, CRM e relatórios.</p>
+
+    <h3>2. Adaptar banco de dados</h3>
+
+    <div class="code-block">
+      <div class="code-block__header"><span>PostgreSQL — schema mínimo</span><span class="code-block__lang">sql</span><button class="code-block__copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg> Copiar</button></div>
+      <pre class="language-sql" tabindex="0"><code class="language-sql"><span class="token comment">-- 1. Colunas BSUID e username</span>
+<span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> contacts <span class="token keyword">ADD</span> <span class="token keyword">COLUMN</span> <span class="token keyword">IF</span> <span class="token operator">NOT</span> <span class="token keyword">EXISTS</span> bsuid <span class="token keyword">TEXT</span><span class="token punctuation">;</span>
+<span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> contacts <span class="token keyword">ADD</span> <span class="token keyword">COLUMN</span> <span class="token keyword">IF</span> <span class="token operator">NOT</span> <span class="token keyword">EXISTS</span> username <span class="token keyword">TEXT</span><span class="token punctuation">;</span>
+<span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> chats <span class="token keyword">ADD</span> <span class="token keyword">COLUMN</span> <span class="token keyword">IF</span> <span class="token operator">NOT</span> <span class="token keyword">EXISTS</span> bsuid <span class="token keyword">TEXT</span><span class="token punctuation">;</span>
+
+<span class="token comment">-- 2. phone_id aceita NULL (CRÍTICO)</span>
+<span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> contacts <span class="token keyword">ALTER</span> <span class="token keyword">COLUMN</span> phone_id <span class="token keyword">DROP</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">;</span>
+
+<span class="token comment">-- 3. Tabela de mapeamento (auditoria)</span>
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> <span class="token keyword">IF</span> <span class="token operator">NOT</span> <span class="token keyword">EXISTS</span> bsuid_phone_mappings <span class="token punctuation">(</span>
+  id BIGSERIAL <span class="token keyword">PRIMARY</span> <span class="token keyword">KEY</span><span class="token punctuation">,</span>
+  bsuid <span class="token keyword">TEXT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  phone_id <span class="token keyword">TEXT</span><span class="token punctuation">,</span>
+  instance_id UUID <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">,</span>
+  first_seen TIMESTAMPTZ <span class="token keyword">DEFAULT</span> <span class="token function">NOW</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  last_seen TIMESTAMPTZ <span class="token keyword">DEFAULT</span> <span class="token function">NOW</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">-- 4. Indexes únicos</span>
+<span class="token keyword">CREATE</span> <span class="token keyword">UNIQUE</span> <span class="token keyword">INDEX</span> <span class="token keyword">IF</span> <span class="token operator">NOT</span> <span class="token keyword">EXISTS</span> idx_contacts_bsuid_instance
+  <span class="token keyword">ON</span> contacts <span class="token punctuation">(</span>bsuid<span class="token punctuation">,</span> instance_id<span class="token punctuation">)</span> <span class="token keyword">WHERE</span> bsuid <span class="token operator">IS</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">;</span>
+<span class="token keyword">CREATE</span> <span class="token keyword">UNIQUE</span> <span class="token keyword">INDEX</span> <span class="token keyword">IF</span> <span class="token operator">NOT</span> <span class="token keyword">EXISTS</span> idx_chats_bsuid_instance
+  <span class="token keyword">ON</span> chats <span class="token punctuation">(</span>bsuid<span class="token punctuation">,</span> instance_id<span class="token punctuation">)</span> <span class="token keyword">WHERE</span> bsuid <span class="token operator">IS</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span><span class="token punctuation">;</span></code></pre>
+    </div>
+
+    <h3>3. Parsear novos campos do webhook</h3>
+
+    <div class="code-block">
+      <div class="code-block__header"><span>Pseudocódigo — extração de campos (mensagens recebidas)</span><span class="code-block__lang">javascript</span><button class="code-block__copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg> Copiar</button></div>
+      <pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token comment">// Webhook de MENSAGEM (payload.messages existe)</span>
+<span class="token keyword">function</span> <span class="token function">parseIncomingMessage</span><span class="token punctuation">(</span><span class="token parameter">payload</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> contact <span class="token operator">=</span> payload<span class="token punctuation">.</span>contacts<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> message <span class="token operator">=</span> payload<span class="token punctuation">.</span>messages<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// Campos NOVOS (sempre presentes a partir de 31/março)</span>
+  <span class="token keyword">const</span> bsuid    <span class="token operator">=</span> contact<span class="token punctuation">.</span>user_id<span class="token punctuation">;</span>           <span class="token comment">// ← BSUID: sempre</span>
+  <span class="token keyword">const</span> username <span class="token operator">=</span> contact<span class="token punctuation">.</span>profile<span class="token operator">?.</span>username<span class="token punctuation">;</span>  <span class="token comment">// ← se adotou</span>
+  <span class="token keyword">const</span> fromBsuid <span class="token operator">=</span> message<span class="token punctuation">.</span>from_user_id<span class="token punctuation">;</span>     <span class="token comment">// ← BSUID: sempre</span>
+
+  <span class="token comment">// Campos que PODEM ser omitidos (username + sem interação 30d)</span>
+  <span class="token keyword">const</span> phone <span class="token operator">=</span> contact<span class="token punctuation">.</span>wa_id <span class="token operator">||</span> <span class="token keyword">null</span><span class="token punctuation">;</span>         <span class="token comment">// ← pode ser undefined!</span>
+  <span class="token keyword">const</span> from  <span class="token operator">=</span> message<span class="token punctuation">.</span>from <span class="token operator">||</span> <span class="token keyword">null</span><span class="token punctuation">;</span>          <span class="token comment">// ← pode ser undefined!</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">{</span> bsuid<span class="token punctuation">,</span> username<span class="token punctuation">,</span> phone<span class="token punctuation">,</span> from<span class="token punctuation">,</span> fromBsuid <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// Webhook de STATUS (payload.statuses existe — nunca junto com messages)</span>
+<span class="token keyword">function</span> <span class="token function">parseStatus</span><span class="token punctuation">(</span><span class="token parameter">payload</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// contacts[] é NOVO em status webhooks, omitido em status "failed"</span>
+  <span class="token keyword">const</span> contact <span class="token operator">=</span> payload<span class="token punctuation">.</span>contacts<span class="token operator">?.</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> status  <span class="token operator">=</span> payload<span class="token punctuation">.</span>statuses<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">const</span> bsuid <span class="token operator">=</span> contact<span class="token operator">?.</span>user_id <span class="token operator">||</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> recipientBsuid <span class="token operator">=</span> status<span class="token punctuation">.</span>recipient_user_id<span class="token punctuation">;</span>  <span class="token comment">// ← BSUID destino</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">{</span> bsuid<span class="token punctuation">,</span> recipientBsuid <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+    </div>
+
+    <h3>4. Resolução dual-identifier</h3>
+    <p>A estratégia recomendada é <strong>phone-first, BSUID-fallback</strong>:</p>
+
+    <div class="code-block">
+      <div class="code-block__header"><span>Pseudocódigo — resolução dual</span><span class="code-block__lang">javascript</span><button class="code-block__copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg> Copiar</button></div>
+      <pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">resolveContact</span><span class="token punctuation">(</span><span class="token parameter">phone<span class="token punctuation">,</span> bsuid<span class="token punctuation">,</span> username</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> contact <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// 1. Tentar por phone (backward compatible)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>phone<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    contact <span class="token operator">=</span> <span class="token function">findByPhone</span><span class="token punctuation">(</span>phone<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>contact <span class="token operator">&amp;&amp;</span> bsuid <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>contact<span class="token punctuation">.</span>bsuid<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      contact<span class="token punctuation">.</span>bsuid <span class="token operator">=</span> bsuid<span class="token punctuation">;</span>          <span class="token comment">// Backfill BSUID</span>
+      contact<span class="token punctuation">.</span>username <span class="token operator">=</span> username<span class="token punctuation">;</span>
+      <span class="token function">save</span><span class="token punctuation">(</span>contact<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token function">logMapping</span><span class="token punctuation">(</span>bsuid<span class="token punctuation">,</span> phone<span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment">// Auditoria</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">// 2. Fallback: tentar por BSUID</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>contact <span class="token operator">&amp;&amp;</span> bsuid<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    contact <span class="token operator">=</span> <span class="token function">findByBsuid</span><span class="token punctuation">(</span>bsuid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>contact <span class="token operator">&amp;&amp;</span> phone <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>contact<span class="token punctuation">.</span>phone<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      contact<span class="token punctuation">.</span>phone <span class="token operator">=</span> phone<span class="token punctuation">;</span>           <span class="token comment">// Backfill phone</span>
+      <span class="token function">save</span><span class="token punctuation">(</span>contact<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token function">logMapping</span><span class="token punctuation">(</span>bsuid<span class="token punctuation">,</span> phone<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">// 3. Nenhum encontrado: criar novo</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>contact<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    contact <span class="token operator">=</span> <span class="token function">createContact</span><span class="token punctuation">(</span><span class="token punctuation">{</span> phone<span class="token punctuation">,</span> bsuid<span class="token punctuation">,</span> username <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>phone <span class="token operator">&amp;&amp;</span> bsuid<span class="token punctuation">)</span> <span class="token function">logMapping</span><span class="token punctuation">(</span>bsuid<span class="token punctuation">,</span> phone<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">return</span> contact<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+    </div>
+
+    <div class="callout">
+      <p><strong>Por que phone-first?</strong> O campo <code>to</code> (phone) tem precedência no Send API e sempre funciona. Começando pelo phone, você mantém compatibilidade total com contatos existentes e enriquece com BSUID automaticamente.</p>
+    </div>
+
+    <h3>5. Handler user_id_update</h3>
+    <p>Inscreva seu app no campo <code>user_id_update</code> no Meta App Dashboard. Quando receber o webhook, atualize o BSUID no registro do contato:</p>
+
+    <div class="code-block">
+      <div class="code-block__header"><span>Pseudocódigo</span><span class="code-block__lang">javascript</span><button class="code-block__copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg> Copiar</button></div>
+      <pre class="language-javascript" tabindex="0"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">handleUserIdUpdate</span><span class="token punctuation">(</span><span class="token parameter">payload</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> update <span class="token keyword">of</span> payload<span class="token punctuation">.</span>user_id_update<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> oldBsuid <span class="token operator">=</span> update<span class="token punctuation">.</span>user_id<span class="token punctuation">.</span>previous<span class="token punctuation">;</span>
+    <span class="token keyword">const</span> newBsuid <span class="token operator">=</span> update<span class="token punctuation">.</span>user_id<span class="token punctuation">.</span>current<span class="token punctuation">;</span>
+    <span class="token keyword">const</span> phone    <span class="token operator">=</span> update<span class="token punctuation">.</span>wa_id <span class="token operator">||</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">const</span> contact <span class="token operator">=</span> <span class="token function">findByBsuid</span><span class="token punctuation">(</span>oldBsuid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>contact<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      contact<span class="token punctuation">.</span>bsuid <span class="token operator">=</span> newBsuid<span class="token punctuation">;</span>
+      <span class="token function">save</span><span class="token punctuation">(</span>contact<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token function">logMapping</span><span class="token punctuation">(</span>newBsuid<span class="token punctuation">,</span> phone<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+    </div>
+
+    <h3>6. Testar no App Dashboard</h3>
+    <p>Desde 16/fev/2026, o Meta App Dashboard permite enviar webhooks de teste com BSUIDs. Teste estes cenários:</p>
+    <ul>
+      <li><strong>Cenário 1:</strong> Usuário SEM username → BSUID + phone presentes</li>
+      <li><strong>Cenário 2:</strong> Usuário COM username, phone indisponível → BSUID + username, sem phone</li>
+      <li><strong>Cenário 3:</strong> Usuário COM username, phone disponível → todos os campos</li>
+      <li><strong>Cenário 4:</strong> user_id_update → BSUID antigo → BSUID novo</li>
+    </ul>
+
+    <h2>Checklist de migração</h2>
+    <div class="material-table-wrap"><table>
+      <thead>
+        <tr><th>Item</th><th>Prioridade</th><th>Prazo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Parsear <code>contacts[].user_id</code> e <code>messages[].from_user_id</code> dos webhooks</td><td><strong style="color:#ef4444;">Crítica</strong></td><td>Agora</td></tr>
+        <tr><td>Adicionar colunas <code>bsuid</code> e <code>username</code> no banco</td><td><strong style="color:#ef4444;">Crítica</strong></td><td>Agora</td></tr>
+        <tr><td>Tornar <code>phone_id</code> nullable</td><td><strong style="color:#ef4444;">Crítica</strong></td><td>Agora</td></tr>
+        <tr><td>Implementar resolução dual (phone-first, BSUID-fallback)</td><td><strong style="color:#ef4444;">Crítica</strong></td><td>Primeira semana de abril</td></tr>
+        <tr><td>Backfill automático cruzado</td><td><strong style="color:#ef4444;">Crítica</strong></td><td>Primeira semana de abril</td></tr>
+        <tr><td>Handler <code>user_id_update</code></td><td><strong style="color:#f59e0b;">Alta</strong></td><td>Abril</td></tr>
+        <tr><td>UI null-safe (phone_id pode ser null)</td><td><strong style="color:#f59e0b;">Alta</strong></td><td>Abril</td></tr>
+        <tr><td>Display @username como fallback</td><td><strong style="color:#f59e0b;">Alta</strong></td><td>Abril</td></tr>
+        <tr><td>Adaptar Send API (<code>to</code> vs <code>recipient</code> + guard temporal)</td><td><strong style="color:#f59e0b;">Alta</strong></td><td>Antes de maio</td></tr>
+        <tr><td>Tratar error 131062 (user error, não retry)</td><td>Normal</td><td>Antes de maio</td></tr>
+        <tr><td>Configurar monitoring para BSUIDs</td><td>Normal</td><td>Abril</td></tr>
+        <tr><td>Implementar REQUEST_CONTACT_INFO em templates</td><td>Normal</td><td>Maio+</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2>Referências</h2>
+    <ul>
+      <li><a href="https://developers.facebook.com/documentation/business-messaging/whatsapp/business-scoped-user-ids/" target="_blank" rel="noopener">Meta BSUID Documentation</a> (atualizada 23/mar/2026)</li>
+      <li><a href="https://developers.facebook.com/apps/" target="_blank" rel="noopener">Meta App Dashboard</a> — testes com BSUIDs</li>
+    </ul>
+
+    <p style="margin-top:2rem; font-size:0.8rem; color:var(--text-dim, #64748b);">Fonte: Meta Developer Documentation — Business-scoped user IDs. Última atualização do documento fonte: 23 de março de 2026. Qualquer mudança descrita pela Meta está sujeita a alteração.</p>
+
+  </div>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+<footer class="material-footer">
+  
+  <div class="material-footer__authors">
+    <p class="material-footer__authors-label">Material produzido por</p>
+    <div class="material-footer__logos">
+      
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://chatjuridico.com.br/quem-somos/?utm_source=whatsapp_founders_membros_chat_juridico&amp;utm_medium=referral&amp;utm_campaign=whatsapp_founders_membros&amp;utm_content=whatsapp-usernames-bsuid" class="material-footer__logo material-footer__logo-link" target="_blank" rel="noopener noreferrer" title="Quem somos — Chat Jurídico">
+            <img src="/assets/images/business-logos/chat-juridico-logo-white-vazado.svg" alt="" loading="lazy" decoding="async">
+            <span class="material-footer__logo-name">Chat Jurídico</span>
+            <span class="material-footer__logo-cta">Quem somos</span>
+          </a>
+          
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+        
+          
+        
+          
+        
+          
+        
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://www.lumnieducacao.com.br/quemsomos/?utm_source=whatsapp_founders_membros_lumni&amp;utm_medium=referral&amp;utm_campaign=whatsapp_founders_membros&amp;utm_content=whatsapp-usernames-bsuid" class="material-footer__logo material-footer__logo-link" target="_blank" rel="noopener noreferrer" title="Quem somos — Lumni">
+            <img src="/assets/images/business-logos/lumni-logo.png" alt="" loading="lazy" decoding="async">
+            <span class="material-footer__logo-name">Lumni</span>
+            <span class="material-footer__logo-cta">Quem somos</span>
+          </a>
+          
+          
+        
+          
+        
+          
+        
+      
+    </div>
+  </div>
+  
+
+  <nav class="material-footer__nav" aria-label="Navegação entre materiais">
+    
+    <a href="/membros/curadoria-templates-utilidade/" class="material-footer__link material-footer__link--prev">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      <div class="material-footer__link-text">
+        <span class="material-footer__link-label">Anterior</span>
+        <span class="material-footer__link-title">Curadoria de templates aprovados por nicho: mar...</span>
+      </div>
+    </a>
+    
+
+    
+    <div></div>
+    
+  </nav>
+</footer>
+
+</div>
+
+</div>

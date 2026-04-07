@@ -19,3 +19,6 @@
 [submodule "evolution-go"]
 	path = evolution-go
 	url = git@github.com:EvolutionAPI/evolution-go.git
+[submodule "evo-bot-runtime"]
+	path = evo-bot-runtime
+	url = git@github.com:EvolutionAPI/evo-bot-runtime.git
