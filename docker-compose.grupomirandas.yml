@@ -1,0 +1,496 @@
+version: "3.7"
+services:
+
+## --------------------------- ORION --------------------------- ##
+
+  evocrm_gateway:
+    image: evoapicloud/evo-crm-gateway:develop
+
+    networks:
+      - gmnet ## Nome da rede interna
+
+    environment:
+      - AUTH_UPSTREAM=evocrm_auth:3001
+      - CRM_UPSTREAM=evocrm_crm:3000
+      - CORE_UPSTREAM=evocrm_core:5555
+      - PROCESSOR_UPSTREAM=evocrm_processor:8000
+      - BOT_RUNTIME_UPSTREAM=evocrm_bot_runtime:8080
+
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
+      labels:
+        - traefik.enable=1
+        - traefik.docker.network=gmnet ## Nome da rede interna
+        - traefik.http.routers.evocrm_gateway.rule=Host(`api-crm.grupomirandas.com.br`) ## Domínio API (gateway)
+        - traefik.http.routers.evocrm_gateway.entrypoints=websecure
+        - traefik.http.routers.evocrm_gateway.priority=1
+        - traefik.http.routers.evocrm_gateway.tls.certresolver=letsencryptresolver
+        - traefik.http.routers.evocrm_gateway.service=evocrm_gateway
+        - traefik.http.services.evocrm_gateway.loadbalancer.server.port=3030
+        - traefik.http.services.evocrm_gateway.loadbalancer.passHostHeader=true
+
+## --------------------------- ORION --------------------------- ##
+
+  evocrm_auth:
+    image: ghcr.io/neritondias/evo-auth:test
+    command: sh -c "bundle exec rails db:migrate 2>&1 || echo 'Migration had errors, continuing...'; bundle exec rails s -p 3001 -b 0.0.0.0"
+
+    networks:
+      - gmnet ## Nome da rede interna
+
+    environment:
+    ## ⚙️ Rails (ambiente)
+      - RAILS_ENV=production
+      - RAILS_MAX_THREADS=5
+
+    ## 🔐 Segredos e tokens
+      - SECRET_KEY_BASE=20adf716260ef1e3969b082073375375de92d3f3515636db93dfb6093d90859b9177941d24148d600a5d69084f48072e747d916cdc765b38caaaa1a02ff43c15
+      - JWT_SECRET_KEY=55519786213b754eaa0fc46b2876ae15926c76ea3825fa6ab3b4386f6aef79e2
+      - EVOAI_CRM_API_TOKEN=893ddcd3533a160eda426177da710e775609318700f71b8ac1fbca985a02843b
+
+    ## 🗄️ PostgreSQL
+      - POSTGRES_HOST=pgvector
+      - POSTGRES_PORT=5432
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=c5b0de0bbed8b6ac81814d7f7db5ddc7
+      - POSTGRES_DATABASE=evocrm
+      - POSTGRES_SSLMODE=disable
+
+    ## 🧊 Redis
+      - REDIS_URL=redis://evocrm_redis:6379/1
+
+    ## 🌐 URLs públicas e CORS
+      - FRONTEND_URL=https://crm.grupomirandas.com.br
+      - BACKEND_URL=https://api-crm.grupomirandas.com.br
+      - CORS_ORIGINS=https://crm.grupomirandas.com.br,https://api-crm.grupomirandas.com.br
+
+    ## ✉️ E-mail (Mailer + SMTP)
+      - SMTP_DOMAIN=grupomirandas.com.br
+      - MAILER_SENDER_EMAIL=notify@grupomirandas.com.br
+      - SMTP_USERNAME=notify@grupomirandas.com
+      - SMTP_PASSWORD=wA2kJzpwPJubmPElmu
+      - SMTP_ADDRESS=mail.grupomirandas.com.br
+      - SMTP_PORT=465
+      - SMTP_AUTHENTICATION=plain
+      - SMTP_ENABLE_STARTTLS_AUTO=true
+
+    ## 🛂 Doorkeeper (OAuth / JWT)
+      - DOORKEEPER_JWT_SECRET_KEY=6509fa262385ffc757166570c74e36dacf2de8fd4c1a5d019231355512229f23
+      - DOORKEEPER_JWT_ALGORITHM=hs256
+      - DOORKEEPER_JWT_ISS=evo-auth-service
+
+    ## 🔑 MFA e filas
+      - MFA_ISSUER=EvoCRM
+      - SIDEKIQ_CONCURRENCY=10
+      - ACTIVE_STORAGE_SERVICE=local
+
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
+
+## --------------------------- ORION --------------------------- ##
+
+  evocrm_auth_sidekiq:
+    image: ghcr.io/neritondias/evo-auth:test
+    command: ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
+
+    networks:
+      - gmnet ## Nome da rede interna
+
+    environment:
+    ## ⚙️ Rails (ambiente)
+      - RAILS_ENV=production
+
+    ## 🔐 Segredos e tokens
+      - SECRET_KEY_BASE=20adf716260ef1e3969b082073375375de92d3f3515636db93dfb6093d90859b9177941d24148d600a5d69084f48072e747d916cdc765b38caaaa1a02ff43c15
+      - JWT_SECRET_KEY=55519786213b754eaa0fc46b2876ae15926c76ea3825fa6ab3b4386f6aef79e2
+      - EVOAI_CRM_API_TOKEN=893ddcd3533a160eda426177da710e775609318700f71b8ac1fbca985a02843b
+
+    ## 🗄️ PostgreSQL
+      - POSTGRES_HOST=pgvector
+      - POSTGRES_PORT=5432
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=c5b0de0bbed8b6ac81814d7f7db5ddc7
+      - POSTGRES_DATABASE=evocrm
+      - POSTGRES_SSLMODE=disable
+
+    ## 🧊 Redis
+      - REDIS_URL=redis://evocrm_redis:6379/1
+
+    ## 🌐 CORS
+      - CORS_ORIGINS=https://crm.grupomirandas.com.br,https://api-crm.grupomirandas.com.br
+
+    ## ✉️ E-mail (Mailer + SMTP)
+      - SMTP_DOMAIN=grupomirandas.com.br
+      - MAILER_SENDER_EMAIL=notify@grupomirandas.com.br
+      - SMTP_USERNAME=notify@grupomirandas.com
+      - SMTP_PASSWORD=wA2kJzpwPJubmPElmu
+      - SMTP_ADDRESS=mail.grupomirandas.com.br
+      - SMTP_PORT=465
+      - SMTP_AUTHENTICATION=plain
+      - SMTP_ENABLE_STARTTLS_AUTO=true
+
+    ## 🛂 Doorkeeper (OAuth / JWT)
+      - DOORKEEPER_JWT_SECRET_KEY=6509fa262385ffc757166570c74e36dacf2de8fd4c1a5d019231355512229f23
+      - DOORKEEPER_JWT_ALGORITHM=hs256
+      - DOORKEEPER_JWT_ISS=evo-auth-service
+
+    ## 🔑 MFA e filas
+      - MFA_ISSUER=EvoCRM
+      - SIDEKIQ_CONCURRENCY=10
+      - ACTIVE_STORAGE_SERVICE=local
+
+    healthcheck:
+      disable: true
+
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
+
+## --------------------------- ORION --------------------------- ##
+
+  evocrm_crm:
+    image: ghcr.io/neritondias/evo-crm:test
+    command: sh -c "until wget -qO- http://evocrm_auth:3001/health >/dev/null 2>&1; do echo 'Waiting for auth...'; sleep 5; done; bundle exec rails db:migrate 2>&1 || echo 'Migration had errors, continuing...'; bundle exec rails s -p 3000 -b 0.0.0.0"
+
+    networks:
+      - gmnet ## Nome da rede interna
+
+    environment:
+    ## ⚙️ Rails (ambiente e logs)
+      - RAILS_ENV=production
+      - RAILS_SERVE_STATIC_FILES=true
+      - RAILS_LOG_TO_STDOUT=true
+
+    ## 🔐 Segredos e tokens
+      - SECRET_KEY_BASE=20adf716260ef1e3969b082073375375de92d3f3515636db93dfb6093d90859b9177941d24148d600a5d69084f48072e747d916cdc765b38caaaa1a02ff43c15
+      - JWT_SECRET_KEY=55519786213b754eaa0fc46b2876ae15926c76ea3825fa6ab3b4386f6aef79e2
+      - EVOAI_CRM_API_TOKEN=893ddcd3533a160eda426177da710e775609318700f71b8ac1fbca985a02843b
+
+    ## 🗄️ PostgreSQL
+      - POSTGRES_HOST=pgvector
+      - POSTGRES_PORT=5432
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=c5b0de0bbed8b6ac81814d7f7db5ddc7
+      - POSTGRES_DATABASE=evocrm
+      - POSTGRES_SSLMODE=disable
+
+    ## 🧊 Redis
+      - REDIS_URL=redis://evocrm_redis:6379/1
+
+    ## 🔗 Serviços internos (Auth + Core)
+      - EVO_AUTH_SERVICE_URL=http://evocrm_auth:3001
+      - EVO_AI_CORE_SERVICE_URL=http://evocrm_core:5555
+
+    ## 🌐 URLs públicas e CORS
+      - BACKEND_URL=https://api-crm.grupomirandas.com.br
+      - FRONTEND_URL=https://crm.grupomirandas.com.br
+      - CORS_ORIGINS=https://crm.grupomirandas.com.br,https://api-crm.grupomirandas.com.br
+
+    ## 📊 Telemetria e logs
+      - DISABLE_TELEMETRY=true
+      - LOG_LEVEL=info
+
+    ## ✨ Funcionalidades da aplicação
+      - ENABLE_ACCOUNT_SIGNUP=true
+      - ENABLE_PUSH_RELAY_SERVER=true
+      - ENABLE_INBOX_EVENTS=true
+
+    ## 🤖 Bot runtime
+      - BOT_RUNTIME_URL=http://evocrm_bot_runtime:8080
+      - BOT_RUNTIME_SECRET=3a678022ec20e117ae692e8fc3ed4d249665c8c21d91e78aec458f8484779dce
+      - BOT_RUNTIME_POSTBACK_BASE_URL=http://evocrm_crm:3000
+
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
+
+## --------------------------- ORION --------------------------- ##
+
+  evocrm_crm_sidekiq:
+    image: ghcr.io/neritondias/evo-crm:test
+    command: ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
+
+    networks:
+      - gmnet ## Nome da rede interna
+
+    environment:
+    ## ⚙️ Rails (ambiente)
+      - RAILS_ENV=production
+
+    ## 🔐 Segredos e tokens
+      - SECRET_KEY_BASE=20adf716260ef1e3969b082073375375de92d3f3515636db93dfb6093d90859b9177941d24148d600a5d69084f48072e747d916cdc765b38caaaa1a02ff43c15
+      - JWT_SECRET_KEY=55519786213b754eaa0fc46b2876ae15926c76ea3825fa6ab3b4386f6aef79e2
+      - EVOAI_CRM_API_TOKEN=893ddcd3533a160eda426177da710e775609318700f71b8ac1fbca985a02843b
+
+    ## 🗄️ PostgreSQL
+      - POSTGRES_HOST=pgvector
+      - POSTGRES_PORT=5432
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=c5b0de0bbed8b6ac81814d7f7db5ddc7
+      - POSTGRES_DATABASE=evocrm
+      - POSTGRES_SSLMODE=disable
+
+    ## 🧊 Redis
+      - REDIS_URL=redis://evocrm_redis:6379/1
+
+    ## 🔗 Serviços internos (Auth + Core)
+      - EVO_AUTH_SERVICE_URL=http://evocrm_auth:3001
+      - EVO_AI_CORE_SERVICE_URL=http://evocrm_core:5555
+
+    ## 🌐 CORS
+      - CORS_ORIGINS=https://crm.grupomirandas.com.br,https://api-crm.grupomirandas.com.br
+
+    ## 🤖 Bot runtime
+      - BOT_RUNTIME_URL=http://evocrm_bot_runtime:8080
+      - BOT_RUNTIME_SECRET=3a678022ec20e117ae692e8fc3ed4d249665c8c21d91e78aec458f8484779dce
+      - BOT_RUNTIME_POSTBACK_BASE_URL=http://evocrm_crm:3000
+
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
+
+## --------------------------- ORION --------------------------- ##
+
+  evocrm_core:
+    image: ghcr.io/neritondias/evo-core:test
+
+    networks:
+      - gmnet ## Nome da rede interna
+
+    environment:
+    ## 🗄️ PostgreSQL (conexão)
+      - DB_HOST=pgvector
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=c5b0de0bbed8b6ac81814d7f7db5ddc7
+      - DB_NAME=evocrm
+      - DB_SSLMODE=disable
+
+    ## 📈 Pool de conexões
+      - DB_MAX_IDLE_CONNS=10
+      - DB_MAX_OPEN_CONNS=100
+      - DB_CONN_MAX_LIFETIME=1h
+      - DB_CONN_MAX_IDLE_TIME=30m
+
+    ## 🌐 API (porta)
+      - PORT=5555
+
+    ## 🔐 Segredos e JWT
+      - SECRET_KEY_BASE=20adf716260ef1e3969b082073375375de92d3f3515636db93dfb6093d90859b9177941d24148d600a5d69084f48072e747d916cdc765b38caaaa1a02ff43c15
+      - JWT_SECRET_KEY=55519786213b754eaa0fc46b2876ae15926c76ea3825fa6ab3b4386f6aef79e2
+      - JWT_ALGORITHM=HS256
+      - ENCRYPTION_KEY=Bu-3lfmq_mRWcw5Rf57ltnzVvTzj6DUhGDlOjq2xjIQ=
+
+    ## 🔗 Serviços internos
+      - EVOLUTION_BASE_URL=http://evocrm_crm:3000
+      - EVO_AUTH_BASE_URL=http://evocrm_auth:3001
+      - AI_PROCESSOR_URL=http://evocrm_processor:8000
+      - AI_PROCESSOR_VERSION=v1
+
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
+
+## --------------------------- ORION --------------------------- ##
+
+  evocrm_processor:
+    image: ghcr.io/neritondias/evo-processor:test
+    command: sh -c "alembic upgrade head 2>&1 || echo 'Alembic migration had errors, continuing...'; python -m scripts.run_seeders; uvicorn src.main:app --host $$HOST --port $$PORT"
+
+    volumes:
+      - evocrm_processor_logs:/app/logs
+
+    networks:
+      - gmnet ## Nome da rede interna
+
+    environment:
+    ## 🗄️ PostgreSQL
+      - POSTGRES_CONNECTION_STRING=postgresql://postgres:c5b0de0bbed8b6ac81814d7f7db5ddc7@pgvector:5432/evocrm?sslmode=disable
+
+    ## 🧊 Redis
+      - REDIS_HOST=evocrm_redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=
+      - REDIS_SSL=false
+      - REDIS_DB=0
+      - REDIS_KEY_PREFIX=a2a_
+      - REDIS_TTL=3600
+
+    ## 🌐 Uvicorn (host / porta)
+      - HOST=0.0.0.0
+      - PORT=8000
+
+    ## 🐛 Debug e segredos
+      - DEBUG=false
+      - SECRET_KEY_BASE=20adf716260ef1e3969b082073375375de92d3f3515636db93dfb6093d90859b9177941d24148d600a5d69084f48072e747d916cdc765b38caaaa1a02ff43c15
+      - ENCRYPTION_KEY=Bu-3lfmq_mRWcw5Rf57ltnzVvTzj6DUhGDlOjq2xjIQ=
+      - EVOAI_CRM_API_TOKEN=893ddcd3533a160eda426177da710e775609318700f71b8ac1fbca985a02843b
+
+    ## 🔗 Integração CRM e Core
+      - EVO_AI_CRM_URL=http://evocrm_crm:3000
+      - CORE_SERVICE_URL=http://evocrm_core:5555/api/v1
+
+    ## 🌍 URLs públicas da API
+      - APP_URL=https://api-crm.grupomirandas.com.br
+      - API_URL=https://api-crm.grupomirandas.com.br
+
+    ## 📋 Metadados da API (OpenAPI)
+      - API_TITLE=Agent Processor Community
+      - API_DESCRIPTION=Agent Processor Community for Evo AI
+      - API_VERSION=1.0.0
+      - ORGANIZATION_NAME=Evo CRM
+
+    ## 🗃️ Cache de tools
+      - TOOLS_CACHE_ENABLED=true
+      - TOOLS_CACHE_TTL=3600
+
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
+
+## --------------------------- ORION --------------------------- ##
+
+  evocrm_bot_runtime:
+    image: evoapicloud/evo-bot-runtime:latest
+
+    networks:
+      - gmnet ## Nome da rede interna
+
+    environment:
+    ## 🌐 Rede (listen)
+      - LISTEN_ADDR=0.0.0.0:8080
+
+    ## 🧊 Redis
+      - REDIS_URL=redis://evocrm_redis:6379/1
+
+    ## 🤖 Processor e segurança
+      - AI_PROCESSOR_URL=http://evocrm_processor:8000
+      - BOT_RUNTIME_SECRET=3a678022ec20e117ae692e8fc3ed4d249665c8c21d91e78aec458f8484779dce
+      - AI_CALL_TIMEOUT_SECONDS=30
+
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
+
+## --------------------------- ORION --------------------------- ##
+
+  evocrm_frontend:
+    image: ghcr.io/neritondias/evo-frontend:test
+
+    networks:
+      - gmnet ## Nome da rede interna
+
+    environment:
+    ## ⚙️ Vite (ambiente)
+      - VITE_APP_ENV=production
+
+    ## 🌐 URLs da API (runtime — necessita suporte no entrypoint da imagem)
+      - VITE_API_URL=https://api-crm.grupomirandas.com.br
+      - VITE_AUTH_API_URL=https://api-crm.grupomirandas.com.br
+      - VITE_EVOAI_API_URL=https://api-crm.grupomirandas.com.br
+      - VITE_AGENT_PROCESSOR_URL=https://api-crm.grupomirandas.com.br
+
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
+      labels:
+        - traefik.enable=1
+        - traefik.docker.network=gmnet ## Nome da rede interna
+        - traefik.http.routers.evocrm_frontend.rule=Host(`crm.grupomirandas.com.br`) ## Domínio frontend (React)
+        - traefik.http.routers.evocrm_frontend.entrypoints=websecure
+        - traefik.http.routers.evocrm_frontend.priority=1
+        - traefik.http.routers.evocrm_frontend.tls.certresolver=letsencryptresolver
+        - traefik.http.routers.evocrm_frontend.service=evocrm_frontend
+        - traefik.http.services.evocrm_frontend.loadbalancer.server.port=80
+        - traefik.http.services.evocrm_frontend.loadbalancer.passHostHeader=true
+
+## --------------------------- ORION --------------------------- ##
+
+  evocrm_redis:
+    image: redis:latest  ## Versão do Redis
+    command: [
+        "redis-server",
+        "--appendonly",
+        "yes",
+        "--port",
+        "6379"
+      ]
+
+    volumes:
+      - evocrm_redis:/data
+
+    networks:
+      - gmnet ## Nome da rede interna
+    ## Descomente as linhas abaixo para uso externo
+    #ports:
+    #  - 6379:6379
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
+
+## --------------------------- ORION --------------------------- ##
+
+volumes:
+  evocrm_processor_logs:
+    external: true
+    name: evocrm_processor_logs
+  evocrm_redis:
+    external: true
+    name: evocrm_redis
+
+networks:
+  gmnet: ## Nome da rede interna
+    external: true
+    name: gmnet ## Nome da rede interna
