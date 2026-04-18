@@ -35,6 +35,10 @@ jobs:
             context: ./evo-ai-processor-community
             dockerfile: ./evo-ai-processor-community/Dockerfile
             image: evo-processor
+          - service: evo-crm-gateway
+            context: ./nginx
+            dockerfile: ./nginx/Dockerfile
+            image: evo-gateway
           - service: evo-ai-core-service-community
             context: ./evo-ai-core-service-community
             dockerfile: ./evo-ai-core-service-community/Dockerfile
