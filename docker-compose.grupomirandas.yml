@@ -4,7 +4,7 @@ services:
 ## --------------------------- ORION --------------------------- ##
 
   evocrm_gateway:
-    image: evoapicloud/evo-crm-gateway:develop
+    image: ghcr.io/neritondias/evo-gateway:test
 
     networks:
       - gmnet ## Nome da rede interna
@@ -50,15 +50,15 @@ services:
       - RAILS_MAX_THREADS=5
 
     ## 🔐 Segredos e tokens
-      - SECRET_KEY_BASE=20adf716260ef1e3969b082073375375de92d3f3515636db93dfb6093d90859b9177941d24148d600a5d69084f48072e747d916cdc765b38caaaa1a02ff43c15
-      - JWT_SECRET_KEY=55519786213b754eaa0fc46b2876ae15926c76ea3825fa6ab3b4386f6aef79e2
-      - EVOAI_CRM_API_TOKEN=893ddcd3533a160eda426177da710e775609318700f71b8ac1fbca985a02843b
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - EVOAI_CRM_API_TOKEN=${EVOAI_CRM_API_TOKEN}
 
     ## 🗄️ PostgreSQL
       - POSTGRES_HOST=pgvector
       - POSTGRES_PORT=5432
       - POSTGRES_USERNAME=postgres
-      - POSTGRES_PASSWORD=c5b0de0bbed8b6ac81814d7f7db5ddc7
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DATABASE=evocrm
       - POSTGRES_SSLMODE=disable
 
@@ -74,14 +74,14 @@ services:
       - SMTP_DOMAIN=grupomirandas.com.br
       - MAILER_SENDER_EMAIL=notify@grupomirandas.com.br
       - SMTP_USERNAME=notify@grupomirandas.com
-      - SMTP_PASSWORD=wA2kJzpwPJubmPElmu
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
       - SMTP_ADDRESS=mail.grupomirandas.com.br
       - SMTP_PORT=465
       - SMTP_AUTHENTICATION=plain
       - SMTP_ENABLE_STARTTLS_AUTO=true
 
     ## 🛂 Doorkeeper (OAuth / JWT)
-      - DOORKEEPER_JWT_SECRET_KEY=6509fa262385ffc757166570c74e36dacf2de8fd4c1a5d019231355512229f23
+      - DOORKEEPER_JWT_SECRET_KEY=${DOORKEEPER_JWT_SECRET_KEY}
       - DOORKEEPER_JWT_ALGORITHM=hs256
       - DOORKEEPER_JWT_ISS=evo-auth-service
 
@@ -113,15 +113,15 @@ services:
       - RAILS_ENV=production
 
     ## 🔐 Segredos e tokens
-      - SECRET_KEY_BASE=20adf716260ef1e3969b082073375375de92d3f3515636db93dfb6093d90859b9177941d24148d600a5d69084f48072e747d916cdc765b38caaaa1a02ff43c15
-      - JWT_SECRET_KEY=55519786213b754eaa0fc46b2876ae15926c76ea3825fa6ab3b4386f6aef79e2
-      - EVOAI_CRM_API_TOKEN=893ddcd3533a160eda426177da710e775609318700f71b8ac1fbca985a02843b
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - EVOAI_CRM_API_TOKEN=${EVOAI_CRM_API_TOKEN}
 
     ## 🗄️ PostgreSQL
       - POSTGRES_HOST=pgvector
       - POSTGRES_PORT=5432
       - POSTGRES_USERNAME=postgres
-      - POSTGRES_PASSWORD=c5b0de0bbed8b6ac81814d7f7db5ddc7
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DATABASE=evocrm
       - POSTGRES_SSLMODE=disable
 
@@ -135,14 +135,14 @@ services:
       - SMTP_DOMAIN=grupomirandas.com.br
       - MAILER_SENDER_EMAIL=notify@grupomirandas.com.br
       - SMTP_USERNAME=notify@grupomirandas.com
-      - SMTP_PASSWORD=wA2kJzpwPJubmPElmu
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
       - SMTP_ADDRESS=mail.grupomirandas.com.br
       - SMTP_PORT=465
       - SMTP_AUTHENTICATION=plain
       - SMTP_ENABLE_STARTTLS_AUTO=true
 
     ## 🛂 Doorkeeper (OAuth / JWT)
-      - DOORKEEPER_JWT_SECRET_KEY=6509fa262385ffc757166570c74e36dacf2de8fd4c1a5d019231355512229f23
+      - DOORKEEPER_JWT_SECRET_KEY=${DOORKEEPER_JWT_SECRET_KEY}
       - DOORKEEPER_JWT_ALGORITHM=hs256
       - DOORKEEPER_JWT_ISS=evo-auth-service
 
@@ -179,15 +179,15 @@ services:
       - RAILS_LOG_TO_STDOUT=true
 
     ## 🔐 Segredos e tokens
-      - SECRET_KEY_BASE=20adf716260ef1e3969b082073375375de92d3f3515636db93dfb6093d90859b9177941d24148d600a5d69084f48072e747d916cdc765b38caaaa1a02ff43c15
-      - JWT_SECRET_KEY=55519786213b754eaa0fc46b2876ae15926c76ea3825fa6ab3b4386f6aef79e2
-      - EVOAI_CRM_API_TOKEN=893ddcd3533a160eda426177da710e775609318700f71b8ac1fbca985a02843b
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - EVOAI_CRM_API_TOKEN=${EVOAI_CRM_API_TOKEN}
 
     ## 🗄️ PostgreSQL
       - POSTGRES_HOST=pgvector
       - POSTGRES_PORT=5432
       - POSTGRES_USERNAME=postgres
-      - POSTGRES_PASSWORD=c5b0de0bbed8b6ac81814d7f7db5ddc7
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DATABASE=evocrm
       - POSTGRES_SSLMODE=disable
 
@@ -214,7 +214,7 @@ services:
 
     ## 🤖 Bot runtime
       - BOT_RUNTIME_URL=http://evocrm_bot_runtime:8080
-      - BOT_RUNTIME_SECRET=3a678022ec20e117ae692e8fc3ed4d249665c8c21d91e78aec458f8484779dce
+      - BOT_RUNTIME_SECRET=${BOT_RUNTIME_SECRET}
       - BOT_RUNTIME_POSTBACK_BASE_URL=http://evocrm_crm:3000
 
     deploy:
@@ -240,15 +240,15 @@ services:
       - RAILS_ENV=production
 
     ## 🔐 Segredos e tokens
-      - SECRET_KEY_BASE=20adf716260ef1e3969b082073375375de92d3f3515636db93dfb6093d90859b9177941d24148d600a5d69084f48072e747d916cdc765b38caaaa1a02ff43c15
-      - JWT_SECRET_KEY=55519786213b754eaa0fc46b2876ae15926c76ea3825fa6ab3b4386f6aef79e2
-      - EVOAI_CRM_API_TOKEN=893ddcd3533a160eda426177da710e775609318700f71b8ac1fbca985a02843b
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - EVOAI_CRM_API_TOKEN=${EVOAI_CRM_API_TOKEN}
 
     ## 🗄️ PostgreSQL
       - POSTGRES_HOST=pgvector
       - POSTGRES_PORT=5432
       - POSTGRES_USERNAME=postgres
-      - POSTGRES_PASSWORD=c5b0de0bbed8b6ac81814d7f7db5ddc7
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DATABASE=evocrm
       - POSTGRES_SSLMODE=disable
 
@@ -264,7 +264,7 @@ services:
 
     ## 🤖 Bot runtime
       - BOT_RUNTIME_URL=http://evocrm_bot_runtime:8080
-      - BOT_RUNTIME_SECRET=3a678022ec20e117ae692e8fc3ed4d249665c8c21d91e78aec458f8484779dce
+      - BOT_RUNTIME_SECRET=${BOT_RUNTIME_SECRET}
       - BOT_RUNTIME_POSTBACK_BASE_URL=http://evocrm_crm:3000
 
     deploy:
@@ -289,7 +289,7 @@ services:
       - DB_HOST=pgvector
       - DB_PORT=5432
       - DB_USER=postgres
-      - DB_PASSWORD=c5b0de0bbed8b6ac81814d7f7db5ddc7
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
       - DB_NAME=evocrm
       - DB_SSLMODE=disable
 
@@ -303,10 +303,10 @@ services:
       - PORT=5555
 
     ## 🔐 Segredos e JWT
-      - SECRET_KEY_BASE=20adf716260ef1e3969b082073375375de92d3f3515636db93dfb6093d90859b9177941d24148d600a5d69084f48072e747d916cdc765b38caaaa1a02ff43c15
-      - JWT_SECRET_KEY=55519786213b754eaa0fc46b2876ae15926c76ea3825fa6ab3b4386f6aef79e2
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - JWT_ALGORITHM=HS256
-      - ENCRYPTION_KEY=Bu-3lfmq_mRWcw5Rf57ltnzVvTzj6DUhGDlOjq2xjIQ=
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
 
     ## 🔗 Serviços internos
       - EVOLUTION_BASE_URL=http://evocrm_crm:3000
@@ -354,9 +354,9 @@ services:
 
     ## 🐛 Debug e segredos
       - DEBUG=false
-      - SECRET_KEY_BASE=20adf716260ef1e3969b082073375375de92d3f3515636db93dfb6093d90859b9177941d24148d600a5d69084f48072e747d916cdc765b38caaaa1a02ff43c15
-      - ENCRYPTION_KEY=Bu-3lfmq_mRWcw5Rf57ltnzVvTzj6DUhGDlOjq2xjIQ=
-      - EVOAI_CRM_API_TOKEN=893ddcd3533a160eda426177da710e775609318700f71b8ac1fbca985a02843b
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - EVOAI_CRM_API_TOKEN=${EVOAI_CRM_API_TOKEN}
 
     ## 🔗 Integração CRM e Core
       - EVO_AI_CRM_URL=http://evocrm_crm:3000
@@ -402,7 +402,7 @@ services:
 
     ## 🤖 Processor e segurança
       - AI_PROCESSOR_URL=http://evocrm_processor:8000
-      - BOT_RUNTIME_SECRET=3a678022ec20e117ae692e8fc3ed4d249665c8c21d91e78aec458f8484779dce
+      - BOT_RUNTIME_SECRET=${BOT_RUNTIME_SECRET}
       - AI_CALL_TIMEOUT_SECONDS=30
 
     deploy:
@@ -431,6 +431,7 @@ services:
       - VITE_AUTH_API_URL=https://api-crm.grupomirandas.com.br
       - VITE_EVOAI_API_URL=https://api-crm.grupomirandas.com.br
       - VITE_AGENT_PROCESSOR_URL=https://api-crm.grupomirandas.com.br
+      - VITE_WS_URL=wss://api-crm.grupomirandas.com.br/cable
 
     deploy:
       placement:
