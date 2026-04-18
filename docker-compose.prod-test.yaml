@@ -67,7 +67,7 @@ services:
   # ---------------------------------------------------------------------------
   evo_auth:
     image: evoapicloud/evo-auth-service-community:latest
-    command: bash -c "bundle exec rails db:prepare && bundle exec rails s -p 3001 -b 0.0.0.0"
+    command: sh -c "bundle exec rails db:prepare && bundle exec rails s -p 3001 -b 0.0.0.0"
     ports:
       - "3001:3001"
     environment:
@@ -104,7 +104,7 @@ services:
 
   evo_auth_sidekiq:
     image: evoapicloud/evo-auth-service-community:latest
-    command: bash -c "bundle exec sidekiq"
+    command: sh -c "bundle exec sidekiq"
     environment:
       RAILS_ENV: production
       SECRET_KEY_BASE: "a]i9F#k2$$Lm7Nq0R!sT4uW6xZ8bD1eG3hJ5oP7rV9yAcE2fH4jM6pS8vX0zB3dK5nQ7tU9wY1"
@@ -128,7 +128,7 @@ services:
   # ---------------------------------------------------------------------------
   evo_crm:
     image: evoapicloud/evo-ai-crm-community:latest
-    command: bash -c "bundle exec rails db:prepare && bundle exec rails s -p 3000 -b 0.0.0.0"
+    command: sh -c "bundle exec rails db:prepare && bundle exec rails s -p 3000 -b 0.0.0.0"
     ports:
       - "3000:3000"
     environment:

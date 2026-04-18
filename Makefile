@@ -100,12 +100,12 @@ seed: seed-auth seed-crm ## Run all seeds (auth first, then CRM)
 
 seed-auth: ## Seed the Auth service (creates default user)
 	@echo "$(CYAN)Seeding Auth service...$(RESET)"
-	docker compose run --rm evo-auth bash -c "bundle exec rails db:prepare && bundle exec rails db:seed"
+	docker compose run --rm evo-auth sh -c "bundle exec rails db:prepare && bundle exec rails db:seed"
 	@echo "$(GREEN)Auth service seeded.$(RESET)"
 
 seed-crm: ## Seed the CRM service (creates default inbox)
 	@echo "$(CYAN)Seeding CRM service...$(RESET)"
-	docker compose run --rm evo-crm bash -c "bundle exec rails db:prepare && bundle exec rails db:seed"
+	docker compose run --rm evo-crm sh -c "bundle exec rails db:prepare && bundle exec rails db:seed"
 	@echo "$(GREEN)CRM service seeded.$(RESET)"
 
 ## —— Shell Access —————————————————————————————————————————————————————————————
