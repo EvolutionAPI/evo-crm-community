@@ -337,7 +337,7 @@ services:
 
     environment:
     ## 🗄️ PostgreSQL
-      - POSTGRES_CONNECTION_STRING=postgresql://postgres:c5b0de0bbed8b6ac81814d7f7db5ddc7@pgvector:5432/evocrm?sslmode=disable
+      - POSTGRES_CONNECTION_STRING=postgresql://postgres:${POSTGRES_PASSWORD}@pgvector:5432/evocrm?sslmode=disable
 
     ## 🧊 Redis
       - REDIS_HOST=evocrm_redis
