@@ -54,7 +54,7 @@ services:
   # ---------------------------------------------------------------------------
   evo_auth:
     image: evoapicloud/evo-auth-service-community:latest
-    command: bash -c "bundle exec rails db:migrate 2>&1 || echo 'Migration had errors, continuing...'; bundle exec rails s -p 3001 -b 0.0.0.0"
+    command: sh -c "bundle exec rails db:migrate 2>&1 || echo 'Migration had errors, continuing...'; bundle exec rails s -p 3001 -b 0.0.0.0"
     environment:
       RAILS_ENV: production
       RAILS_MAX_THREADS: 5

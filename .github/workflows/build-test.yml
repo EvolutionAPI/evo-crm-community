@@ -1,0 +1,71 @@
+name: Build Test Images
+
+on:
+  push:
+    branches: [test/all-fixes]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  build-images:
+    name: Build ${{ matrix.service }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - service: evo-auth-service-community
+            context: ./evo-auth-service-community
+            dockerfile: ./evo-auth-service-community/Dockerfile
+            image: evo-auth
+          - service: evo-ai-crm-community
+            context: ./evo-ai-crm-community
+            dockerfile: ./evo-ai-crm-community/docker/Dockerfile
+            image: evo-crm
+          - service: evo-ai-frontend-community
+            context: ./evo-ai-frontend-community
+            dockerfile: ./evo-ai-frontend-community/Dockerfile
+            image: evo-frontend
+          - service: evo-ai-processor-community
+            context: ./evo-ai-processor-community
+            dockerfile: ./evo-ai-processor-community/Dockerfile
+            image: evo-processor
+          - service: evo-ai-core-service-community
+            context: ./evo-ai-core-service-community
+            dockerfile: ./evo-ai-core-service-community/Dockerfile
+            image: evo-core
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.image }}:test
+            ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.image }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            RAILS_ENV=production
+            RAILS_SERVE_STATIC_FILES=true
