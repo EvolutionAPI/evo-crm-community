@@ -3,13 +3,13 @@
 	url = https://github.com/EvolutionAPI/evo-auth-service-community.git
 [submodule "evo-ai-crm-community"]
 	path = evo-ai-crm-community
-	url = https://github.com/EvolutionAPI/evo-ai-crm-community.git
+	url = https://github.com/NeritonDias/evo-ai-crm-community.git
 [submodule "evo-ai-frontend-community"]
 	path = evo-ai-frontend-community
 	url = https://github.com/NeritonDias/evo-ai-frontend-community.git
 [submodule "evo-ai-processor-community"]
 	path = evo-ai-processor-community
-	url = https://github.com/EvolutionAPI/evo-ai-processor-community.git
+	url = https://github.com/NeritonDias/evo-ai-processor-community.git
 [submodule "evo-ai-core-service-community"]
 	path = evo-ai-core-service-community
 	url = https://github.com/EvolutionAPI/evo-ai-core-service-community.git
