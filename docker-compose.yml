@@ -56,12 +56,14 @@ services:
       RAILS_ENV: ${RAILS_ENV:-development}
       REDIS_URL: redis://:${REDIS_PASSWORD:-evoai_redis_pass}@redis:6379/1
       POSTGRES_HOST: postgres
+    volumes:
+      - auth_storage:/rails/storage
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
-    command: bash -c "bundle install && bundle exec rails db:prepare && bundle exec rails s -p 3001 -b 0.0.0.0"
+    command: bash -c "bundle install && bundle exec rails db:prepare && rm -f /rails/tmp/pids/server.pid && bundle exec rails s -p 3001 -b 0.0.0.0"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
       interval: 30s
@@ -85,6 +87,8 @@ services:
       redis:
         condition: service_healthy
     command: bash -c "bundle install && bundle exec sidekiq"
+    healthcheck:
+      disable: true
 
   # ---------------------------------------------------------------------------
   # CRM Service (Ruby / Rails) — Port 3000
@@ -107,11 +111,13 @@ services:
       POSTGRES_HOST: postgres
       EVO_AUTH_SERVICE_URL: http://evo-auth:3001
       EVO_AI_CORE_SERVICE_URL: http://evo-core:5555
+      BACKEND_URL: ${BACKEND_URL:-http://localhost:3000}
     volumes:
       - ./evo-ai-crm-community:/app:delegated
       - crm_bundle:/usr/local/bundle
       - crm_node_modules:/app/node_modules
       - crm_cache:/app/tmp/cache
+      - crm_storage:/app/storage
     depends_on:
       postgres:
         condition: service_healthy
@@ -122,7 +128,7 @@ services:
     entrypoint: docker/entrypoints/rails.sh
     command: ["bundle", "exec", "rails", "s", "-p", "3000", "-b", "0.0.0.0"]
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/auth/sign_in"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health/live"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -144,11 +150,13 @@ services:
       POSTGRES_HOST: postgres
       EVO_AUTH_SERVICE_URL: http://evo-auth:3001
       EVO_AI_CORE_SERVICE_URL: http://evo-core:5555
+      BACKEND_URL: ${BACKEND_URL:-http://localhost:3000}
     volumes:
       - ./evo-ai-crm-community:/app:delegated
       - crm_bundle:/usr/local/bundle
       - crm_node_modules:/app/node_modules
       - crm_cache:/app/tmp/cache
+      - crm_storage:/app/storage
     depends_on:
       postgres:
         condition: service_healthy
@@ -183,7 +191,7 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5555/api/v1/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5555/health"]
       interval: 15s
       timeout: 5s
       retries: 5
@@ -210,6 +218,7 @@ services:
       PORT: "8000"
       EVO_AI_CRM_URL: http://evo-crm:3000
       CORE_SERVICE_URL: http://evo-core:5555/api/v1
+      CORS_ORIGINS: '["*"]'
     volumes:
       - processor_logs:/app/logs
     depends_on:
@@ -245,7 +254,7 @@ services:
       evo-crm:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:80/health"]
       interval: 15s
       timeout: 5s
       retries: 3
@@ -254,7 +263,9 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  auth_storage:
   crm_bundle:
   crm_node_modules:
   crm_cache:
+  crm_storage:
   processor_logs:
