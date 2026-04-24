@@ -56,6 +56,8 @@ services:
       RAILS_ENV: ${RAILS_ENV:-development}
       REDIS_URL: redis://:${REDIS_PASSWORD:-evoai_redis_pass}@redis:6379/1
       POSTGRES_HOST: postgres
+    volumes:
+      - ./evo-auth-service-community/storage:/rails/storage
     depends_on:
       postgres:
         condition: service_healthy
