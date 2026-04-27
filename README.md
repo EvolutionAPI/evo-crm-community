@@ -11,6 +11,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/EvolutionAPI/evo-crm-community/releases/latest"><img src="https://img.shields.io/github/v/release/EvolutionAPI/evo-crm-community?include_prereleases&label=version&color=00ffa7" alt="Latest version" /></a>
   <a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License: Apache 2.0" /></a>
   <a href="https://docs.evolutionfoundation.com.br"><img src="https://img.shields.io/badge/Docs-evolutionfoundation.com.br-00ffa7" alt="Documentation" /></a>
   <a href="https://evolutionfoundation.com.br/community"><img src="https://img.shields.io/badge/Community-Join%20us-white" alt="Community" /></a>
@@ -28,6 +29,27 @@
 EVO CRM Community is the open-source edition of the EVO CRM platform — a complete suite for AI-assisted customer support. It brings together authentication, CRM, AI agents, agent processing and a modern frontend into a unified, self-hostable stack.
 
 This repository is the **monorepo entrypoint**: it aggregates all community services as Git submodules, giving you a single place to clone, update and orchestrate the entire platform.
+
+---
+
+## Current version
+
+**`v1.0.0-rc1`** — first tagged release candidate. See the [release notes](https://github.com/EvolutionAPI/evo-crm-community/releases/tag/v1.0.0-rc1) for highlights, security advisories and known issues.
+
+The umbrella tag pins each submodule at its corresponding `v1.0.0-rc1` tag. Cloning with `--recurse-submodules` at this tag reproduces the full stack as released:
+
+| Service | Tag | Release notes |
+|---------|-----|---------------|
+| [`evo-auth-service-community`](https://github.com/EvolutionAPI/evo-auth-service-community/releases/tag/v1.0.0-rc1)       | `v1.0.0-rc1` | [link](https://github.com/EvolutionAPI/evo-auth-service-community/releases/tag/v1.0.0-rc1) |
+| [`evo-ai-crm-community`](https://github.com/EvolutionAPI/evo-ai-crm-community/releases/tag/v1.0.0-rc1)                   | `v1.0.0-rc1` | [link](https://github.com/EvolutionAPI/evo-ai-crm-community/releases/tag/v1.0.0-rc1) |
+| [`evo-ai-frontend-community`](https://github.com/EvolutionAPI/evo-ai-frontend-community/releases/tag/v1.0.0-rc1)         | `v1.0.0-rc1` | [link](https://github.com/EvolutionAPI/evo-ai-frontend-community/releases/tag/v1.0.0-rc1) |
+| [`evo-ai-processor-community`](https://github.com/EvolutionAPI/evo-ai-processor-community/releases/tag/v1.0.0-rc1)       | `v1.0.0-rc1` | [link](https://github.com/EvolutionAPI/evo-ai-processor-community/releases/tag/v1.0.0-rc1) |
+| [`evo-ai-core-service-community`](https://github.com/EvolutionAPI/evo-ai-core-service-community/releases/tag/v1.0.0-rc1) | `v1.0.0-rc1` | [link](https://github.com/EvolutionAPI/evo-ai-core-service-community/releases/tag/v1.0.0-rc1) |
+| [`evo-bot-runtime`](https://github.com/EvolutionAPI/evo-bot-runtime/releases/tag/v1.0.0-rc1)                              | `v1.0.0-rc1` | [link](https://github.com/EvolutionAPI/evo-bot-runtime/releases/tag/v1.0.0-rc1) |
+
+```bash
+git clone --recurse-submodules --branch v1.0.0-rc1 git@github.com:EvolutionAPI/evo-crm-community.git
+```
 
 ---
 
