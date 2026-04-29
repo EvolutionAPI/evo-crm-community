@@ -93,6 +93,8 @@ Refer to each service's own README for environment configuration, setup and seed
 
 > **Note:** `evo-auth-service-community` must be seeded before `evo-ai-crm-community` — the CRM depends on the user created by the auth seed.
 
+> **Production note:** When deploying to a real environment, `BACKEND_URL` in `.env.example` must be overridden with the public URL of your CRM backend (e.g. `https://crm.example.com`). The bundled `http://localhost:3000` default exists for local development only and will produce broken webhook URLs in external integrations if left unchanged in production.
+
 For detailed setup instructions, visit the [full documentation](https://docs.evolutionfoundation.com.br).
 
 ---
