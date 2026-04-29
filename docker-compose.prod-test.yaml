@@ -1,13 +1,20 @@
 version: "3.8"
 
 # =============================================================================
-# Evo CRM Community — Local Production Test
+# Evo CRM Community - Local Production Test
 # =============================================================================
 # Simulates the production swarm stack locally using docker compose.
 # Uses the same Docker Hub images that would run in production.
 #
+# RAILS_ENV is set to production, so BACKEND_URL and FRONTEND_URL must be
+# non-localhost values (the CRM refuses to boot in production with localhost).
+# On Mac/Windows: host.docker.internal works out of the box.
+# On Linux: use the host LAN IP or add extra_hosts mapping.
+#
 # Usage:
-#   docker compose -f docker-compose.prod-test.yaml up -d
+#   BACKEND_URL=http://host.docker.internal:3030 \
+#   FRONTEND_URL=http://host.docker.internal:5173 \
+#     docker compose -f docker-compose.prod-test.yaml up -d
 #   docker compose -f docker-compose.prod-test.yaml logs -f
 #   docker compose -f docker-compose.prod-test.yaml down -v
 # =============================================================================
@@ -82,7 +89,7 @@ services:
       POSTGRES_PASSWORD: evoai_dev_password
       POSTGRES_DATABASE: evo_community
       REDIS_URL: redis://:evoai_redis_pass@evo_redis:6379/1
-      FRONTEND_URL: http://localhost:5173
+      FRONTEND_URL: "${FRONTEND_URL:?FRONTEND_URL must be set to a non-localhost URL for prod-test (e.g. http://host.docker.internal:5173)}"
       MAILER_SENDER_EMAIL: noreply@evoai.local
       DOORKEEPER_JWT_SECRET_KEY: "a]i9F#k2$$Lm7Nq0R!sT4uW6xZ8bD1eG3hJ5oP7rV9yAcE2fH4jM6pS8vX0zB3dK5nQ7tU9wY1"
       DOORKEEPER_JWT_ALGORITHM: hs256
@@ -146,9 +153,11 @@ services:
       REDIS_URL: redis://:evoai_redis_pass@evo_redis:6379/0
       EVO_AUTH_SERVICE_URL: http://evo_auth:3001
       EVO_AI_CORE_SERVICE_URL: http://evo_core:5555
-      BACKEND_URL: http://localhost:3030
-      FRONTEND_URL: http://localhost:5173
-      CORS_ORIGINS: http://localhost:5173,http://localhost:3030
+      BACKEND_URL: "${BACKEND_URL:?BACKEND_URL must be set to a non-localhost URL for prod-test (e.g. http://host.docker.internal:3030)}"
+      FRONTEND_URL: "${FRONTEND_URL:?FRONTEND_URL must be set to a non-localhost URL for prod-test (e.g. http://host.docker.internal:5173)}"
+      # CORS origins are the browser's Origin header (Vite serves on localhost:5173 from the host machine);
+      # they are independent of BACKEND_URL/FRONTEND_URL which are CRM-side URLs.
+      CORS_ORIGINS: "${CORS_ORIGINS:-http://localhost:5173,http://localhost:3030}"
       DISABLE_TELEMETRY: "true"
       LOG_LEVEL: info
       ENABLE_ACCOUNT_SIGNUP: "true"

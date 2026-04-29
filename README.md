@@ -91,9 +91,16 @@ Refer to each service's own README for environment configuration, setup and seed
 - [evo-ai-core-service-community](https://github.com/EvolutionAPI/evo-ai-core-service-community#readme)
 - [evo-bot-runtime](https://github.com/EvolutionAPI/evo-bot-runtime#readme)
 
-> **Note:** `evo-auth-service-community` must be seeded before `evo-ai-crm-community` — the CRM depends on the user created by the auth seed.
+> **Note:** `evo-auth-service-community` must be seeded before `evo-ai-crm-community` - the CRM depends on the user created by the auth seed.
 
-> **Production note:** When deploying to a real environment, `BACKEND_URL` in `.env.example` must be overridden with the public URL of your CRM backend (e.g. `https://crm.example.com`). The bundled `http://localhost:3000` default exists for local development only and will produce broken webhook URLs in external integrations if left unchanged in production.
+> **Production deployment - required environment overrides**
+>
+> Before promoting any environment to production, the following variables in `.env.example` must be replaced with public URLs (the bundled `http://localhost:*` defaults exist for local development only):
+>
+> - **`BACKEND_URL`** - public URL of the CRM backend (e.g. `https://crm.example.com`). The CRM refuses to boot in production if this is missing or points at localhost.
+> - **`FRONTEND_URL`** - public URL of the frontend (e.g. `https://app.example.com`). Used for OAuth redirects and channel webhook fallbacks.
+>
+> Leaving the localhost defaults in production results in webhook callbacks pointing at the container, broken OAuth redirects and silently failed external integrations.
 
 For detailed setup instructions, visit the [full documentation](https://docs.evolutionfoundation.com.br).
 
