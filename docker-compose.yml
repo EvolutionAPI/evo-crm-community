@@ -117,7 +117,9 @@ services:
       - crm_bundle:/usr/local/bundle
       - crm_node_modules:/app/node_modules
       - crm_cache:/app/tmp/cache
-      - crm_storage:/app/storage
+      # /app/storage is already shared between evo-crm and evo-crm-sidekiq through
+      # the project bind above — no additional named volume needed (a named volume
+      # here would mask the bind and break host visibility of ActiveStorage blobs).
     depends_on:
       postgres:
         condition: service_healthy
@@ -158,7 +160,8 @@ services:
       - crm_bundle:/usr/local/bundle
       - crm_node_modules:/app/node_modules
       - crm_cache:/app/tmp/cache
-      - crm_storage:/app/storage
+      # See evo-crm above — /app/storage is shared via the project bind, no named
+      # volume needed (and one here would mask the bind, hiding blobs from host).
     depends_on:
       postgres:
         condition: service_healthy
@@ -301,5 +304,4 @@ volumes:
   crm_bundle:
   crm_node_modules:
   crm_cache:
-  crm_storage:
   processor_logs:
