@@ -27,6 +27,7 @@ Release de estabilização posterior ao `v1.0.0-rc1` (2026-04-24). Foco em fixes
 
 ### Fixed
 
+- **`Makefile` — sequência de setup do banco**: `make setup` agora cria o DB no CRM, faz `db:schema:load` (carrega o schema mestre, incluindo todas as tabelas que o auth-service usa), marca migrations do auth como aplicadas via `rails runner` com `.sort` determinístico e `rescue ActiveRecord::RecordNotUnique` específico, e só então faz `db:seed` no CRM seguido do auth. Sem isso, `make setup` em fresh install falhava com `PG::UndefinedTable: roles`. (cherry-pick do PR #69 — autoria de @andersonlemesc preservada)
 - **Docker — `auth_storage`**: substituído volume nomeado por bind mount, corrigindo `permission denied` ao gravar arquivos no serviço de autenticação. Bind mount estendido também para o `sidekiq` com `mkdir` defensivo no entrypoint. (#65, #72)
 - **Docker — Alpine compat**: trocado `bash -c` por `sh -c` em scripts internos para compatibilidade com imagens Alpine. (#31)
 - **Docker — healthcheck**: corrigido path do healthcheck do `evo-core`. (#26)
@@ -36,11 +37,17 @@ Release de estabilização posterior ao `v1.0.0-rc1` (2026-04-24). Foco em fixes
 ### Changed
 
 - **CI**: workflow `validate-compose` e `lint-dockerfiles` agora rodam em PRs contra `develop` (não só `main`). (#59)
-- **Submódulos**: bumps coordenados para incorporar correções dos serviços individuais ao longo do ciclo (Evolution Go admin cleanup, EVO-975, EVO-1005, EVO-1012, etc.).
+- **Submódulos**: bumps coordenados ao longo da janela do rc2 para incorporar todas as correções dos serviços individuais — ver changelog de cada submódulo para detalhes:
+  - `evo-ai-crm-community`: 17 PRs (incluindo automation rules EVO-989, navigation EVO-1007, idempotent migrations, EvoGo fixes, contact import, etc.)
+  - `evo-ai-frontend-community`: 9 PRs (UI / UX, brand colors, automation UI, role select, team members, etc.)
+  - `evo-auth-service-community`: novo role `super_admin` + migration de upgrade automático para PROD existente, fix de password forwarding na criação de user
+  - `evo-ai-processor-community`: `python -m` para alembic/uvicorn + idempotência
+  - Demais submódulos: ajustes de CI
 
-### Pendente para a tag final
+### Notas para upgrade de PROD existente
 
-- PR #69 (`fix(setup): seed sequence`) — em rebase com `develop` no momento do corte. Pode ser incluída via fast-follow se rebase estiver pronto antes da tag.
+- O `db:migrate` do `evo-auth-service-community` neste release **promove o usuário bootstrap original para o novo role `super_admin`** e revoga seus tokens ativos — operador será forçado a fazer logout/login uma vez na primeira requisição após o upgrade. Isso é esperado e necessário para o JWT refletir o novo role.
+- Outros usuários `account_owner` perdem acesso ao painel `/settings/admin` — comportamento intencional (panel reservado a operação de instalação, não a gestão de conta).
 
 ## [v1.0.0-rc1] - 2026-04-24
 
