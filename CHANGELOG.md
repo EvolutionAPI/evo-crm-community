@@ -23,31 +23,93 @@ Este repositório é o guarda-chuva da família CRM Community: orquestra os 7 su
 
 ## [v1.0.0-rc2] - 2026-05-05
 
-Release de estabilização posterior ao `v1.0.0-rc1` (2026-04-24). Foco em fixes de Docker / setup, atualização coordenada dos submódulos e correções de orquestração para deploy em produção.
+Release de estabilização posterior ao `v1.0.0-rc1` (2026-04-24). Janela de ~3 semanas concentrando ~40 commits de orquestração no super-repo e ~70 PRs entre os submódulos. Foco em quatro frentes:
+
+1. **Docker / setup determinístico** — `make setup` em fresh install funciona sem race condition entre serviços
+2. **Mídia Cloud / WhatsApp** — buckets S3 privados, gravação de áudio PTT-compatible, render inline de vídeo
+3. **RBAC `super_admin`** — operador da instalação separado do `account_owner`, com upgrade automático em PROD existente
+4. **Estabilidade de API** — eliminação de `500 Internal Server Error` em endpoints REST, fluxo Evolution Go corrigido ponta a ponta
+
+### Highlights
+
+- 🎙️ **Áudio WhatsApp Cloud finalmente funciona em produção**: depois de 4 tentativas com FFmpeg WASM (todas bloqueadas por requisitos de SharedArrayBuffer / COOP+COEP / worker corrompido no npm), pivotamos para `opus-recorder@8.0.5` — gravação direta em OGG/Opus PTT-compatible no browser, sem reencode, sem latência server-side.
+- 🎬 **Vídeo no chat aparece como player**, não mais como anexo "Baixar arquivo".
+- 🗄️ **Mídia em bucket privado funciona**: signed URLs aplicadas tanto no provider Evolution API quanto no Evolution Go.
+- 🔐 **Novo role `super_admin`**: operador da instalação tem acesso exclusivo ao painel `/settings/admin` (SMTP, Storage, Auth Providers, OpenAI, Channels, Inbound Email). Migration automática promove o usuário bootstrap em instalações existentes e revoga seus tokens ativos para forçar relogin com o novo role.
+- 🧪 **E2E Playwright** validando o pipeline de gravação de áudio com microfone fake — ciclo de feedback caiu de 10min de deploy para 5s local.
+- 🛠️ **`make setup` determinístico**: idempotência total nas migrations dos serviços Rails resolve a race condition com o `evo-bot-runtime` Go core na criação da tabela `users`.
+
+### Added
+
+- **Role `super_admin`** no `evo-auth-service-community` — installation-level operator. Detém todas as permissões do `account_owner` mais `installation_configs.manage` (acesso ao painel `/settings/admin`). Atribuído automaticamente ao usuário do setup wizard. PROD existente recebe via `db:migrate` (promove `User.order(:created_at).first`).
+- **`Role::ADMIN_ROLE_KEYS` constant** no CRM — centraliza `%w[account_owner super_admin]`, adotada por mailers de admin e finders. Antes a lista estava hardcoded em quatro lugares e excluía `super_admin`, causando comportamento inconsistente em bypasses de admin.
+- **Tabela `user_tours`** no auth-service — persistência do estado de onboarding tour por usuário.
+- **Suite E2E de gravação de áudio** no frontend — Playwright + Chromium com fake media stream. `e2e/audio-recording.spec.ts` valida que `recordPttOgg` produz blob `audio/ogg` com magic bytes `OggS` em ambiente real de browser.
+- **Componente `MessageVideo`** no frontend — render inline com `<video controls preload="metadata" playsInline>`, fallback para tile de download quando codec não suportado.
+- **Aba "Automation" no Edit Stage Modal** (EVO-989, frontend) + **`Pipelines::StageAutomationService`** (EVO-989, CRM) — regras `trigger → action` por estágio do pipeline.
+
+### Changed
+
+- **WhatsApp Cloud — gravação de áudio: FFmpeg WASM → `opus-recorder`**. Saga completa documentada em `evo-ai-frontend-community/CHANGELOG.md`. Resumo: a Cloud API exige OGG/Opus PTT; a primeira solução tentou converter webm → ogg no browser via FFmpeg WASM, mas as 4 versões testadas falharam por motivos arquiteturais distintos (SharedArrayBuffer, worker 0-byte no npm, fetch incondicional de worker no wrapper). Substituído por `opus-recorder@8.0.5`, que captura PCM cru e codifica direto em OGG/Opus via `libopusenc` — sem reencode, sem requisitos de cross-origin isolation, sem viagem ao servidor.
+- **Mídia em bucket S3 privado** (CRM): `generate_direct_s3_url` substituído por `presigned_url` em `whatsapp/providers/evolution_go_service.rb` e `whatsapp/providers/evolution_service.rb`. Antes a URL pública direta retornava 404 quando o bucket era privado (Cloudflare R2, S3 com ACL privada).
+- **Conversation list — preload de `pipeline_items`**: `ConversationFinder#build_conversations_query` mantinha preload mínimo, então o chip de pipeline na listagem só aparecia depois de tagear manualmente. Adicionado `pipeline_items: [:pipeline, :pipeline_stage]` ao preload.
+- **Admin Settings UX no frontend**: "Social Login" renomeado para "Authentication Providers" (refletindo OAuth genérico, não só redes sociais), aba Twitter escondida (provider deprecado), banners de aviso "configuração via env" em SMTP/Storage para deixar claro que mudanças na UI não persistem em PROD.
+- **CI**: workflow `validate-compose` e `lint-dockerfiles` agora rodam em PRs contra `develop` (não só `main`). (#59)
+- **Submódulos**: bumps coordenados ao longo da janela do rc2:
+  - `evo-ai-crm-community`: 19 PRs/commits (automation rules EVO-989, navigation EVO-1007, idempotent migrations, EvoGo fixes ponta a ponta, contact import, super_admin RBAC, signed URLs S3, etc.)
+  - `evo-ai-frontend-community`: 11+ PRs/commits (opus-recorder, vídeo inline, automation UI, role select, team members, brand colors, admin settings UX, e2e Playwright, etc.)
+  - `evo-auth-service-community`: super_admin role + migration de upgrade automático com revocation de tokens, fix de password forwarding na criação de user, idempotência total no init_schema, tabela user_tours
+  - `evo-ai-processor-community`: `python -m` para alembic/uvicorn + idempotência
+  - Demais submódulos: ajustes de CI
 
 ### Fixed
 
+#### Setup / Docker / Orquestração
 - **`Makefile` — sequência de setup do banco**: `make setup` agora cria o DB no CRM, faz `db:schema:load` (carrega o schema mestre, incluindo todas as tabelas que o auth-service usa), marca migrations do auth como aplicadas via `rails runner` com `.sort` determinístico e `rescue ActiveRecord::RecordNotUnique` específico, e só então faz `db:seed` no CRM seguido do auth. Sem isso, `make setup` em fresh install falhava com `PG::UndefinedTable: roles`. (cherry-pick do PR #69 — autoria de @andersonlemesc preservada)
+- **`init_schema` do auth-service totalmente idempotente** — race condition entre o setup do auth-service e o `evo-bot-runtime` Go core (que cria uma tabela `users` mínima ao subir) fazia `init_schema` falhar com `PG::DuplicateTable` quando o Go vencia a corrida. Reescrito com `if_not_exists: true` em todos `create_table`/`add_index` e helper `add_fk_if_missing` para foreign keys.
 - **Docker — `auth_storage`**: substituído volume nomeado por bind mount, corrigindo `permission denied` ao gravar arquivos no serviço de autenticação. Bind mount estendido também para o `sidekiq` com `mkdir` defensivo no entrypoint. (#65, #72)
 - **Docker — Alpine compat**: trocado `bash -c` por `sh -c` em scripts internos para compatibilidade com imagens Alpine. (#31)
 - **Docker — healthcheck**: corrigido path do healthcheck do `evo-core`. (#26)
 - **Env validation (EVO-985)**: bloqueio de `BACKEND_URL` / `FRONTEND_URL` apontando para `localhost` em produção — falha rápida no boot ao invés de servir URLs inválidas para clientes externos. (#75)
 - **Submodules**: retargeting de SHAs órfãos para branches públicas (`develop` / `main`). Eliminado erro de checkout no CI causado por SHAs perdidos.
 
-### Changed
+#### Mídia / Chat
+- **Áudio WhatsApp Cloud não chegava ao destinatário** — a Meta rejeita `audio/webm` como mensagem de voz. Resolvido pela migração para `opus-recorder` (ver Changed acima).
+- **Vídeo aparecia como anexo "Baixar arquivo"** — `MessageBubble` caía no fallback genérico. Novo `MessageVideo` com player nativo.
+- **Mídia em bucket privado retornava 404** — signed URLs aplicadas em ambos os providers (ver Changed).
 
-- **CI**: workflow `validate-compose` e `lint-dockerfiles` agora rodam em PRs contra `develop` (não só `main`). (#59)
-- **Submódulos**: bumps coordenados ao longo da janela do rc2 para incorporar todas as correções dos serviços individuais — ver changelog de cada submódulo para detalhes:
-  - `evo-ai-crm-community`: 17 PRs (incluindo automation rules EVO-989, navigation EVO-1007, idempotent migrations, EvoGo fixes, contact import, etc.)
-  - `evo-ai-frontend-community`: 9 PRs (UI / UX, brand colors, automation UI, role select, team members, etc.)
-  - `evo-auth-service-community`: novo role `super_admin` + migration de upgrade automático para PROD existente, fix de password forwarding na criação de user
-  - `evo-ai-processor-community`: `python -m` para alembic/uvicorn + idempotência
-  - Demais submódulos: ajustes de CI
+#### RBAC
+- **`super_admin` ignorado por bypasses do CRM** — listas hardcoded de roles administrativas filtravam só `account_owner`. `User#administrator?` e `Role::ADMIN_ROLE_KEYS` consolidaram o reconhecimento; sem isso, super_admin via lista de conversas vazia, mailers de admin não chegavam, etc.
+
+#### Estabilidade de API (CRM, do ciclo `develop`)
+- **`PATCH /api/v1/pipelines/:id/pipeline_items/:id/update_custom_fields`** estourava `NoMethodError` (before_action ignorando a action). (#32)
+- **`POST /api/v1/contacts/:id/companies`** estourava `NoMethodError` em `must_belong_to_same_account`. (#34)
+- **`POST/DELETE /api/v1/contacts/:id/companies`** retornava 500 em violação de regra de negócio (kwargs incompatíveis no `error_response`). (#35)
+- **`/api/v1/agents/*`** retornava 500/Unauthorized (request.headers não encaminhado, current_user usado como argumento posicional errado). (#33)
+- **`GET /api/v1/oauth/applications`** retornava array em vez de envelope padrão, quebrando a tela de OAuth Apps. (#36)
+- **EVO-1000** — `POST /api/v1/team_members` retornava 401 para todo UUID válido (`map(&:to_i)` em PK UUID). (#24)
+
+#### Evolution Go (EvoGo) — fluxo WhatsApp ponta a ponta (#22)
+- Conversation routing por LID (sem mais conversas duplicadas a cada envio outgoing)
+- Sender type correto, contact lookup via inbox joins, reabertura de pendentes
+- Mídia salva sem arquivo (3 problemas: ActiveStorage commit em Sidekiq, `mediaUrl` aninhado, base64 inline para EvoGo sem S3)
+- Áudio sem waveform (definições duplicadas de `configure_audio_metadata`)
+- ActionCable broadcast em token vazio
+
+#### Auth-service
+- **`POST /api/v1/users` retornava 500 sem `role`** — fallback para `agent` em vez de `Role.find_by!(key: nil)`. (#9)
+- **Login sempre 401 para usuários criados pela UI** — `password` não era encaminhado para `AgentBuilder.new`, então cada agente nascia com hash Argon2 aleatório que ninguém conhecia. (commit `917c366`)
+- **Migration `add_message_template_permissions_to_account_owner`** falhava em fresh install com `PG::UndefinedTable: roles` por ordem de timestamp. Adicionado guard `table_exists?(:roles)`.
+- **EVO-971**: gate de `/setup/status` agora considera bootstrap, não só licensing. (#8)
+- **EVO-967**: agentes convidados são auto-confirmados; lookup de role tolera role inexistente sem 500. (#3)
 
 ### Notas para upgrade de PROD existente
 
-- O `db:migrate` do `evo-auth-service-community` neste release **promove o usuário bootstrap original para o novo role `super_admin`** e revoga seus tokens ativos — operador será forçado a fazer logout/login uma vez na primeira requisição após o upgrade. Isso é esperado e necessário para o JWT refletir o novo role.
-- Outros usuários `account_owner` perdem acesso ao painel `/settings/admin` — comportamento intencional (panel reservado a operação de instalação, não a gestão de conta).
+- ⚠️ **`db:migrate` do `evo-auth-service-community` revoga tokens ativos do operador bootstrap** ao promovê-lo para `super_admin`. O operador será forçado a fazer logout/login uma vez na primeira requisição após o upgrade. Isso é esperado e necessário para o JWT refletir o novo role.
+- ⚠️ **Outros usuários `account_owner` perdem acesso ao painel `/settings/admin`** — comportamento intencional (panel reservado a operação de instalação, não a gestão de conta). Se você criou múltiplos `account_owner` na rc1 e quer que mais de um deles tenha acesso ao admin, terá de promovê-los manualmente ao novo role via console (`User.find(...).user_roles.create!(role: Role.find_by!(key: 'super_admin'))`).
+- ✅ **Mídia em bucket S3 privado**: o fix de signed URL é puramente backend e ativa automaticamente após o upgrade do CRM. Não há ação de migração necessária.
+- ✅ **Áudio WhatsApp Cloud**: ativo automaticamente após o upgrade do frontend. Hard refresh do browser é necessário para invalidar o bundle antigo.
+- 📝 **CHANGELOG por submódulo** tem o detalhamento técnico completo de cada item — esta seção é o resumo guarda-chuva.
 
 ## [v1.0.0-rc1] - 2026-04-24
 
