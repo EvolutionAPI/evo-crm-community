@@ -34,21 +34,28 @@ This repository is the **monorepo entrypoint**: it aggregates all community serv
 
 ## Current version
 
-**`v1.0.0-rc1`** — first tagged release candidate. See the [release notes](https://github.com/EvolutionAPI/evo-crm-community/releases/tag/v1.0.0-rc1) for highlights, security advisories and known issues.
+**`v1.0.0-rc2`** (latest) — see the [release notes](https://github.com/EvolutionAPI/evo-crm-community/releases/tag/v1.0.0-rc2) for highlights, security advisories and known issues. Previous: [`v1.0.0-rc1`](https://github.com/EvolutionAPI/evo-crm-community/releases/tag/v1.0.0-rc1).
 
-The umbrella tag pins each submodule at its corresponding `v1.0.0-rc1` tag. Cloning with `--recurse-submodules` at this tag reproduces the full stack as released:
+The umbrella tag pins each submodule at its corresponding `v1.0.0-rc2` tag. Cloning with `--recurse-submodules` at this tag reproduces the full stack as released:
 
-| Service | Tag | Release notes |
-|---------|-----|---------------|
-| [`evo-auth-service-community`](https://github.com/EvolutionAPI/evo-auth-service-community/releases/tag/v1.0.0-rc1)       | `v1.0.0-rc1` | [link](https://github.com/EvolutionAPI/evo-auth-service-community/releases/tag/v1.0.0-rc1) |
-| [`evo-ai-crm-community`](https://github.com/EvolutionAPI/evo-ai-crm-community/releases/tag/v1.0.0-rc1)                   | `v1.0.0-rc1` | [link](https://github.com/EvolutionAPI/evo-ai-crm-community/releases/tag/v1.0.0-rc1) |
-| [`evo-ai-frontend-community`](https://github.com/EvolutionAPI/evo-ai-frontend-community/releases/tag/v1.0.0-rc1)         | `v1.0.0-rc1` | [link](https://github.com/EvolutionAPI/evo-ai-frontend-community/releases/tag/v1.0.0-rc1) |
-| [`evo-ai-processor-community`](https://github.com/EvolutionAPI/evo-ai-processor-community/releases/tag/v1.0.0-rc1)       | `v1.0.0-rc1` | [link](https://github.com/EvolutionAPI/evo-ai-processor-community/releases/tag/v1.0.0-rc1) |
-| [`evo-ai-core-service-community`](https://github.com/EvolutionAPI/evo-ai-core-service-community/releases/tag/v1.0.0-rc1) | `v1.0.0-rc1` | [link](https://github.com/EvolutionAPI/evo-ai-core-service-community/releases/tag/v1.0.0-rc1) |
-| [`evo-bot-runtime`](https://github.com/EvolutionAPI/evo-bot-runtime/releases/tag/v1.0.0-rc1)                              | `v1.0.0-rc1` | [link](https://github.com/EvolutionAPI/evo-bot-runtime/releases/tag/v1.0.0-rc1) |
+| Service | Git tag | Docker image | Release notes |
+|---------|---------|--------------|---------------|
+| [`evo-auth-service-community`](https://github.com/EvolutionAPI/evo-auth-service-community)       | `v1.0.0-rc2` | `evoapicloud/evo-auth-service-community:1.0.0-rc2`       | [link](https://github.com/EvolutionAPI/evo-auth-service-community/releases/tag/v1.0.0-rc2) |
+| [`evo-ai-crm-community`](https://github.com/EvolutionAPI/evo-ai-crm-community)                   | `v1.0.0-rc2` | `evoapicloud/evo-ai-crm-community:1.0.0-rc2`             | [link](https://github.com/EvolutionAPI/evo-ai-crm-community/releases/tag/v1.0.0-rc2) |
+| [`evo-ai-frontend-community`](https://github.com/EvolutionAPI/evo-ai-frontend-community)         | `v1.0.0-rc2` | `evoapicloud/evo-ai-frontend-community:1.0.0-rc2`        | [link](https://github.com/EvolutionAPI/evo-ai-frontend-community/releases/tag/v1.0.0-rc2) |
+| [`evo-ai-processor-community`](https://github.com/EvolutionAPI/evo-ai-processor-community)       | `v1.0.0-rc2` | `evoapicloud/evo-ai-processor-community:1.0.0-rc2`       | [link](https://github.com/EvolutionAPI/evo-ai-processor-community/releases/tag/v1.0.0-rc2) |
+| [`evo-ai-core-service-community`](https://github.com/EvolutionAPI/evo-ai-core-service-community) | `v1.0.0-rc2` | `evoapicloud/evo-ai-core-service-community:1.0.0-rc2`    | [link](https://github.com/EvolutionAPI/evo-ai-core-service-community/releases/tag/v1.0.0-rc2) |
+| [`evo-bot-runtime`](https://github.com/EvolutionAPI/evo-bot-runtime)                              | `v1.0.0-rc2` | `evoapicloud/evo-bot-runtime:1.0.0-rc2`                  | [link](https://github.com/EvolutionAPI/evo-bot-runtime/releases/tag/v1.0.0-rc2) |
+| `evo-crm-gateway` (built from this repo)                                                          | `v1.0.0-rc2` | `evoapicloud/evo-crm-gateway:1.0.0-rc2`                  | (see umbrella release) |
+
+> **Note on tag naming**: the **git tag** has the `v` prefix (`v1.0.0-rc2`) following standard Git convention. The **Docker tag** drops the `v` (`1.0.0-rc2`) following SemVer / Docker Hub convention. `latest` on Docker Hub always tracks the most recent published tag.
 
 ```bash
-git clone --recurse-submodules --branch v1.0.0-rc1 git@github.com:EvolutionAPI/evo-crm-community.git
+# Source clone (pinned to the release):
+git clone --recurse-submodules --branch v1.0.0-rc2 git@github.com:EvolutionAPI/evo-crm-community.git
+
+# Or pull pre-built images (compose files use :latest by default):
+docker pull evoapicloud/evo-ai-crm-community:1.0.0-rc2
 ```
 
 ---
