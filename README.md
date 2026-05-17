@@ -133,6 +133,10 @@ Join the [community](https://wizzcomms.com/community) to discuss ideas, ask ques
 
 Want to support the project? Visit [wizzcomms.com/contribute](https://wizzcomms.com/contribute).
 
+## Built on Open Source
+
+WizzDesk is built on top of [EVO CRM Community](https://github.com/EvolutionAPI/evo-crm-community) (EvolutionAPI) and [Chatwoot](https://github.com/chatwoot/chatwoot), which are open-source projects released under the Apache 2.0 licence. We are grateful to their contributors.
+
 ## License
 
 Apache 2.0 — see [LICENSE](./LICENSE) for details.

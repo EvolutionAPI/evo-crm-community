@@ -14,7 +14,8 @@ RESET := \033[0m
 
 .PHONY: help setup start stop restart logs clean build status \
         seed seed-auth seed-crm \
-        shell-auth shell-crm shell-core shell-processor shell-bot-runtime
+        shell-auth shell-crm shell-core shell-processor shell-bot-runtime \
+        sync-upstream
 
 ## —— General ——————————————————————————————————————————————————————————————————
 
@@ -60,7 +61,7 @@ setup: ## First-time setup: copy env, build, start, seed
 	@echo "  Bot Runtime:  http://localhost:8080"
 	@echo "  Mailhog:      http://localhost:8025"
 	@echo ""
-	@echo "  Login:  support@evo-auth-service-community.com"
+	@echo "  Login:  support@wizzcomms.com"
 	@echo "  Pass:   Password@123"
 	@echo ""
 
@@ -100,12 +101,12 @@ seed: seed-auth seed-crm ## Run all seeds (auth first, then CRM)
 
 seed-auth: ## Seed the Auth service (creates default user)
 	@echo "$(CYAN)Seeding Auth service...$(RESET)"
-	docker compose run --rm evo-auth bash -c "bundle exec rails db:prepare && bundle exec rails db:seed"
+	docker compose run --rm evo-auth sh -c "bundle exec rails db:prepare && bundle exec rails db:seed"
 	@echo "$(GREEN)Auth service seeded.$(RESET)"
 
 seed-crm: ## Seed the CRM service (creates default inbox)
 	@echo "$(CYAN)Seeding CRM service...$(RESET)"
-	docker compose run --rm evo-crm bash -c "bundle exec rails db:prepare && bundle exec rails db:seed"
+	docker compose run --rm evo-crm sh -c "bundle exec rails db:prepare && bundle exec rails db:seed"
 	@echo "$(GREEN)CRM service seeded.$(RESET)"
 
 ## —— Shell Access —————————————————————————————————————————————————————————————
@@ -124,3 +125,24 @@ shell-processor: ## Open a shell in the Processor service container
 
 shell-bot-runtime: ## Open a shell in the Bot Runtime service container
 	docker compose exec evo-bot-runtime sh
+
+## —— Fork upstream sync ———————————————————————————————————————————————————————
+
+sync-upstream: ## Pull upstream EvolutionAPI changes into forks, preserving WizzDesk branding
+	@echo "$(CYAN)Syncing forks with upstream EvolutionAPI...$(RESET)"
+	@for sub in evo-ai-crm-community evo-ai-frontend-community; do \
+		echo ""; \
+		echo "$(CYAN)=== $$sub ===$(RESET)"; \
+		git -C $$sub fetch upstream || (echo "$(CYAN)Adding upstream remote for $$sub...$(RESET)" && \
+			if [ "$$sub" = "evo-ai-crm-community" ]; then \
+				git -C $$sub remote add upstream https://github.com/EvolutionAPI/evo-crm-community.git; \
+			else \
+				git -C $$sub remote add upstream https://github.com/EvolutionAPI/evo-ai-frontend-community.git; \
+			fi && \
+			git -C $$sub fetch upstream); \
+		git -C $$sub checkout wizz; \
+		git -C $$sub rebase upstream/main; \
+		echo "$(GREEN)✓ $$sub rebased on upstream/main$(RESET)"; \
+	done
+	@echo ""
+	@echo "$(GREEN)Done. Review any conflicts, then run: git -C <sub> push origin wizz --force-with-lease$(RESET)"
